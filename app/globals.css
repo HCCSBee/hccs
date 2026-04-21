@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
 :root {
+  --emerald: #10b981;
+  --gold: #C9A84C;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+:root {
   --background: #ffffff;
   --foreground: #171717;
 }
