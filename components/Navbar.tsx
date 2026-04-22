@@ -3,14 +3,20 @@ import Link from "next/link";
 import { useState } from "react";
 
 const navLinks = [
-  { href: "/", label: "Home" },
   { href: "/about", label: "About" },
-  { href: "/employer", label: "Employer Services" },
-  { href: "/membership", label: "Membership" },
-  { href: "/hr-news", label: "HR News" },
-  { href: "/employment-laws", label: "Employment Laws" },
+  { href: "/employer", label: "Services" },
+  { href: "/news-archive", label: "Media" },
+  { href: "/hr-news", label: "News" },
   { href: "/resources", label: "Resources" },
   { href: "/contact", label: "Contact" },
+  { href: "/membership", label: "Membership" },
+  { href: "/compliance-scan", label: "Compliance Scan" },
+];
+
+const utilityLinks = [
+  { href: "/", label: "EN/中文" },
+  { href: "/owner-access-panel", label: "HR Access" },
+  { href: "/member-portal", label: "Sign In" },
 ];
 
 export default function Navbar() {
@@ -21,9 +27,7 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-emerald-700">
           <span className="text-2xl font-extrabold tracking-tight">HCCS</span>
-          <span className="hidden sm:block text-xs font-normal text-gray-500 leading-tight">
-            Human Capital Consulting<br />&amp; Services
-          </span>
+          
         </Link>
 
         {/* Desktop nav */}
@@ -37,18 +41,17 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <div className="hidden lg:flex items-center gap-3">
-          <Link
-            href="/compliance-scan"
-            className="text-sm border border-emerald-600 text-emerald-700 px-3 py-1.5 rounded hover:bg-emerald-50 transition-colors"
-          >
-            Free Scan
-          </Link>
+        <div className="hidden lg:flex items-center gap-4">
+          {utilityLinks.map((l) => (
+            <Link key={l.href + l.label} href={l.href} className="text-sm text-gray-700 hover:text-emerald-600 transition-colors">
+              {l.label}
+            </Link>
+          ))}
           <Link
             href="/consultation"
             className="text-sm bg-emerald-600 text-white px-4 py-1.5 rounded hover:bg-emerald-700 transition-colors"
           >
-            Book Free Consultation
+            Book
           </Link>
         </div>
 
@@ -79,13 +82,20 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+            {utilityLinks.map((l) => (
+              <li key={l.href + l.label}>
+                <Link href={l.href} onClick={() => setOpen(false)} className="block py-1 hover:text-emerald-600">
+                  {l.label}
+                </Link>
+              </li>
+            ))}
             <li>
               <Link
                 href="/consultation"
                 onClick={() => setOpen(false)}
                 className="block mt-2 text-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
               >
-                Book Free Consultation
+                Book
               </Link>
             </li>
           </ul>
