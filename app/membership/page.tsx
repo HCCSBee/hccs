@@ -40,11 +40,11 @@ const plans = [
       "Government training grant access",
     ],
     cta: "Get Essential",
-    href: "/consultation",
+    href: "/checkout?plan=essential",
   },
   {
     name: "Professional",
-    price: "Custom",
+    price: "S$11,988",
     period: "annual billing",
     highlight: true,
     target: "Growing businesses",
@@ -62,7 +62,7 @@ const plans = [
   },
   {
     name: "Strategic",
-    price: "Custom",
+    price: "S$17,988",
     period: "annual billing",
     highlight: false,
     target: "Enterprise HR teams",
@@ -99,7 +99,7 @@ const faqs = [
   },
   {
     q: "Is payment secure?",
-    a: "Yes. All payments are processed securely via Stripe. HCCS never stores your card details.",
+    a: "Yes. All payments are processed securely via Airwallex. HCCS never stores your card details.",
   },
 ];
 

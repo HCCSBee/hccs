@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase/client";
 
 const videoLibrary = [
   { title: "Understanding the Employment Act 2024 Amendments", duration: "18 min", tier: "Essential", locked: false },
@@ -13,37 +15,57 @@ const videoLibrary = [
 ];
 
 export default function MemberPortalPage() {
-  const [chatInput, setChatInput] = useState("");
-  const [messages, setMessages] = useState<{ role: "user" | "ai"; text: string }[]>([
-    {
-      role: "ai",
-      text: "Hello! I'm your AI HR Assistant, trained on Singapore MOM regulations, CPF rules, TAFEP guidelines, and employment law. How can I help you today?",
-    },
-  ]);
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [authChecked, setAuthChecked] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [chatbaseId, setChatbaseId] = useState<string | null>(null);
+  const [userTierName, setUserTierName] = useState("Essential");
 
-  const handleSend = async () => {
-    if (!chatInput.trim()) return;
-    const userMsg = chatInput.trim();
-    setChatInput("");
-    setMessages((prev) => [...prev, { role: "user", text: userMsg }]);
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setMessages((prev) => [
-      ...prev,
-      {
-        role: "ai",
-        text: "Thank you for your question. Based on Singapore's employment regulations, I recommend consulting with our HR specialists for a comprehensive answer tailored to your specific situation. Please book a free consultation for personalised advice.",
-      },
-    ]);
-    setLoading(false);
-  };
+  useEffect(() => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) {
+        router.replace("/login");
+        return;
+      }
+
+      setUserEmail(session.user.email ?? null);
+
+      const res = await fetch("/api/member/chatbase", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as {
+          user_tier_id?: number;
+          tier_name?: string;
+          chatbase_id?: string | null;
+        };
+
+        setUserTierName(data.tier_name || "Essential");
+        setChatbaseId(data.chatbase_id || null);
+      }
+
+      setAuthChecked(true);
+    });
+  }, [router]);
+
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900">Member Portal</h1>
-        <p className="text-gray-500 text-sm mt-1">Welcome back. Your AI HR tools and premium resources are ready.</p>
+        <p className="text-gray-500 text-sm mt-1">
+          Welcome back{userEmail ? `, ${userEmail}` : ""}. Your AI HR tools and premium resources are ready.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -58,45 +80,18 @@ export default function MemberPortalPage() {
               </div>
             </div>
 
-            <div className="h-80 overflow-y-auto p-5 space-y-4 bg-gray-50">
-              {messages.map((msg, i) => (
-                <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                  <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2.5 rounded-2xl text-sm ${
-                      msg.role === "user"
-                        ? "bg-emerald-600 text-white"
-                        : "bg-white border border-gray-200 text-gray-700"
-                    }`}
-                  >
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="bg-white border border-gray-200 text-gray-400 px-4 py-2.5 rounded-2xl text-sm">
-                    Typing...
-                  </div>
+            <div className="h-[600px]">
+              {chatbaseId ? (
+                <iframe
+                  src={`https://www.chatbase.co/chatbot-iframe/${chatbaseId}`}
+                  width="100%"
+                  style={{ height: "100%" }}
+                />
+              ) : (
+                <div className="h-full flex items-center justify-center text-gray-400 text-sm">
+                  AI assistant is not available for your current plan.
                 </div>
               )}
-            </div>
-
-            <div className="p-4 border-t border-gray-100 flex gap-3">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Ask about Singapore HR, MOM regulations, EP/PR..."
-                className="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
-              <button
-                onClick={handleSend}
-                disabled={!chatInput.trim() || loading}
-                className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 text-sm font-medium"
-              >
-                Send
-              </button>
             </div>
           </div>
         </div>
@@ -133,7 +128,7 @@ export default function MemberPortalPage() {
           {/* Membership Status */}
           <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
             <h3 className="font-semibold text-gray-900 mb-1">Your Plan</h3>
-            <span className="text-xs font-semibold bg-emerald-600 text-white px-2 py-0.5 rounded-full">Essential</span>
+            <span className="text-xs font-semibold bg-emerald-600 text-white px-2 py-0.5 rounded-full">{userTierName}</span>
             <p className="text-xs text-gray-500 mt-2">Renews: April 2027</p>
             <Link href="/membership" className="mt-3 block text-xs text-emerald-700 underline">
               Upgrade to Professional →

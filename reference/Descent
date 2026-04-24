@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <link href="/vite.svg" rel="icon" type="image/svg+xml"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Descent | HCCS Access
+  </title>
+  <meta content="HCCS provides end-to-end HR consulting services in Singapore — from EP/PR applications and HR compliance to AI-powered HR solutions. MOM-registered, licensed EA agency with 25+ years experience." name="description"/>
+  <meta content="HCCS — Human Capital Consulting &amp; Services" property="og:title"/>
+  <meta content="Start–Staff–Scale Your SG Business. End-to-end HR consulting, immigration, and AI-driven HR solutions for Singapore businesses." property="og:description"/>
+  <meta content="website" property="og:type"/>
+  <meta content="https://hccs.sg" property="og:url"/>
+  <meta content="summary_large_image" name="twitter:card"/>
+  <meta content="HCCS — Human Capital Consulting &amp; Services" name="twitter:title"/>
+  <meta content="Singapore's trusted HR consultancy. EP/PR applications, HR compliance, AI HR solutions." name="twitter:description"/>
+  <script type="application/ld+json">
+   {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Human Capital Consulting & Services (Spore) Pte Ltd",
+      "alternateName": "HCCS",
+      "description": "Singapore-based HR consultancy providing EP/PR applications, HR compliance, workforce planning, and AI-driven HR solutions.",
+      "url": "https://hccs.sg",
+      "telephone": "+65-9436-2866",
+      "email": "enquiry@hccs.sg",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "10 Anson Road #33-15, International Plaza",
+        "addressLocality": "Singapore",
+        "postalCode": "079903",
+        "addressCountry": "SG"
+      },
+      "areaServed": "Singapore",
+      "priceRange": "$$"
+    }
+  </script>
+  <script crossorigin="" src="/assets/index-CtfG0aLw.js" type="module">
+  </script>
+  <link crossorigin="" href="/assets/index-gG7dULyr.css" rel="stylesheet"/>
+  <script type="module">
+   if (window.self === window.top) {
+  let lastPath = "";
+  function getPageNameFromPath(path) {
+    const segments = path.split("/").filter(Boolean);
+    return segments[0] || null;
+  }
+  function trackPageView() {
+    const path = window.location.pathname;
+    if (path === lastPath) return;
+    lastPath = path;
+    const pageName = getPageNameFromPath(path) || "home";
+    const appId = "69c3928519db1fee4acc175a";
+    if (!appId) return;
+    fetch(`/app-logs/${appId}/log-user-in-app/${pageName}`, {
+      method: "POST",
+    }).catch(() => {});
+  }
+  const originalPushState = history.pushState.bind(history);
+  history.pushState = function (...args) {
+    originalPushState(...args);
+    trackPageView();
+  };
+  const originalReplaceState = history.replaceState.bind(history);
+  history.replaceState = function (...args) {
+    originalReplaceState(...args);
+    trackPageView();
+  };
+  window.addEventListener("popstate", trackPageView);
+  trackPageView();
+}
+  </script>
+  <meta content="https://media.base44.com/images/public/69c3928519db1fee4acc175a/6331e89ab_Untitleddesign1.png/v1/fill/w_1200,h_630/6331e89ab_Untitleddesign1.png" property="og:image"/>
+  <meta content="HCCS Access " property="og:site_name"/>
+  <meta content="https://media.base44.com/images/public/69c3928519db1fee4acc175a/6331e89ab_Untitleddesign1.png/v1/fill/w_1200,h_630/6331e89ab_Untitleddesign1.png" name="twitter:image"/>
+  <meta content="https://hccs.sg/Descent" name="twitter:url"/>
+  <meta content="yes" name="mobile-web-app-capable"/>
+  <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+  <meta content="HCCS Access " name="apple-mobile-web-app-title"/>
+  <link href="https://hccs.sg/Descent" rel="canonical"/>
+ </head>
+ <body>
+  <div id="root">
+  </div>
+ <script>
+(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="V5_sne4WDBbABvwxyLpl3";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+</script></body>
+</html>

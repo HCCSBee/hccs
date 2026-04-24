@@ -1,115 +1,125 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "HR Resources — Templates, SOPs & Guides | HCCS",
+  title: "Resources | HCCS",
   description:
-    "Download free and premium HR templates, SOPs, employment contract templates, and compliance guides for Singapore businesses.",
+    "External HR and compliance resources for Singapore employers, including CPF, MOM, IRAS, ACRA, ICA, SNEF, TAFEP, and NTUC links.",
 };
 
-const freeResources = [
-  { icon: "📄", title: "Employment Contract Template (Singapore)", type: "DOCX", size: "128 KB" },
-  { icon: "📊", title: "CPF Contribution Rate Table 2026", type: "PDF", size: "256 KB" },
-  { icon: "📋", title: "Leave Policy Template", type: "DOCX", size: "98 KB" },
-  { icon: "📝", title: "Itemised Payslip Format Guide", type: "PDF", size: "120 KB" },
-  { icon: "📌", title: "Fair Hiring Checklist (TAFEP Compliant)", type: "PDF", size: "88 KB" },
+const governmentLinks = [
+  {
+    label: "CPF Board",
+    href: "https://www.cpf.gov.sg",
+    description: "Central Provident Fund rules, employer obligations, and contribution guidance.",
+  },
+  {
+    label: "Ministry of Manpower",
+    href: "https://www.mom.gov.sg",
+    description: "Employment practices, work pass rules, and core labor regulations in Singapore.",
+  },
+  {
+    label: "Inland Revenue Authority",
+    href: "https://www.iras.gov.sg",
+    description: "Corporate tax, payroll tax reporting, and tax compliance information.",
+  },
+  {
+    label: "Accounting & Corporate Regulatory Authority",
+    href: "https://www.acra.gov.sg",
+    description: "Business registration, filing requirements, and corporate governance matters.",
+  },
+  {
+    label: "Immigration & Checkpoints Authority",
+    href: "https://www.ica.gov.sg",
+    description: "Immigration policies and entry requirements for Singapore.",
+  },
+  {
+    label: "Singapore National Employers Federation",
+    href: "https://www.snef.org.sg",
+    description: "Employer-focused updates, advisory material, and industrial relations support.",
+  },
+  {
+    label: "Tripartite Alliance for Fair & Progressive Employment",
+    href: "https://www.tafep.sg",
+    description: "Fair hiring practices, workplace guidelines, and anti-discrimination advisories.",
+  },
+  {
+    label: "National Trades Union Congress",
+    href: "https://www.ntuc.org.sg",
+    description: "Workplace support ecosystem and labor movement resources.",
+  },
 ];
 
-const premiumResources = [
-  { icon: "📦", title: "Complete HR Policy Pack (20+ policies)", badge: "Essential+" },
-  { icon: "🔒", title: "HR SOPs Library (30+ Standard Operating Procedures)", badge: "Essential+" },
-  { icon: "📐", title: "Organisational Design Toolkit", badge: "Professional+" },
-  { icon: "🤖", title: "AI HR Chatbot (Singapore MOM, CPF, TAFEP knowledge base)", badge: "Essential+" },
-  { icon: "🎬", title: "Video Insights Library (Singapore HR & Compliance)", badge: "Essential+" },
-  { icon: "📊", title: "Workforce Planning Excel Toolkit", badge: "Professional+" },
-  { icon: "📈", title: "KPI & Performance Management Template Pack", badge: "Professional+" },
-  { icon: "💰", title: "Salary Benchmarking Guide 2026", badge: "Strategic" },
+const hccsLinks = [
+  { label: "About HCCS", href: "/about" },
+  { label: "HR News & Updates", href: "/hr-news" },
+  { label: "Media", href: "/media" },
+  { label: "Contact", href: "/contact" },
+  { label: "Membership", href: "/membership" },
 ];
 
 export default function ResourcesPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-16">
       <section className="text-center mb-12">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">HR Resources</h1>
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Resources</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Free and premium HR templates, SOPs, compliance guides, and toolkits designed for Singapore businesses.
+          Practical external resources for Singapore employers and HR teams.
         </p>
       </section>
 
-      {/* Free Resources */}
       <section className="mb-14">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Free Downloads</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Government & Institutional Links</h2>
         <div className="space-y-3">
-          {freeResources.map((r) => (
-            <div
-              key={r.title}
-              className="flex items-center justify-between bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow"
+          {governmentLinks.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between gap-4 bg-white border border-gray-100 rounded-xl p-4 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all"
             >
-              <div className="flex items-center gap-4">
-                <span className="text-2xl">{r.icon}</span>
+              <div>
                 <div>
-                  <p className="font-medium text-gray-900 text-sm">{r.title}</p>
-                  <p className="text-xs text-gray-400">
-                    {r.type} · {r.size}
-                  </p>
+                  <p className="font-semibold text-gray-900 text-sm">{item.label}</p>
+                  <p className="text-xs text-gray-500 mt-1">{item.description}</p>
                 </div>
               </div>
-              <button className="text-sm text-emerald-600 hover:text-emerald-800 font-semibold border border-emerald-300 px-4 py-1.5 rounded-lg hover:bg-emerald-50 transition-colors">
-                Download
-              </button>
-            </div>
+              <span className="text-emerald-700 text-sm font-semibold whitespace-nowrap">Visit ↗</span>
+            </a>
           ))}
         </div>
       </section>
 
-      {/* Premium Resources */}
       <section className="mb-14">
         <div className="flex items-center gap-3 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Premium Resources</h2>
-          <span className="text-xs font-semibold bg-amber-100 text-amber-800 px-2 py-1 rounded-full">
-            Members Only
-          </span>
+          <h2 className="text-2xl font-bold text-gray-900">HCCS Internal Links</h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {premiumResources.map((r) => (
-            <div
-              key={r.title}
-              className="flex items-center gap-4 bg-gray-50 border border-gray-200 rounded-xl p-4 relative overflow-hidden"
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {hccsLinks.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="bg-gray-50 border border-gray-200 rounded-xl p-4 hover:border-emerald-300 hover:bg-emerald-50/40 transition-colors"
             >
-              <span className="text-2xl">{r.icon}</span>
-              <div className="flex-1">
-                <p className="font-medium text-gray-800 text-sm">{r.title}</p>
-                <span className="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full mt-1 inline-block">
-                  {r.badge}
-                </span>
-              </div>
-              <span className="text-gray-400 text-xl">🔒</span>
-            </div>
+              <p className="font-medium text-gray-800 text-sm">{item.label}</p>
+              <p className="text-xs text-emerald-700 mt-1">Open page →</p>
+            </a>
           ))}
-        </div>
-        <div className="mt-6 text-center">
-          <Link
-            href="/membership"
-            className="bg-emerald-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-emerald-700 transition-colors"
-          >
-            Unlock Premium Resources — View Plans
-          </Link>
         </div>
       </section>
 
-      {/* Custom Request */}
       <section className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center">
-        <h2 className="text-xl font-bold text-gray-900 mb-3">Need a Custom HR Document?</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-3">Need Curated Support Instead Of Self-Serve Links?</h2>
         <p className="text-sm text-gray-600 max-w-xl mx-auto mb-5">
-          Our consultants can draft custom employment contracts, HR policies, SOPs, and compliance documentation
-          tailored to your specific business needs.
+          Book a consultation and HCCS will translate these external sources into a practical action plan for your
+          business context.
         </p>
-        <Link
-          href="/contact"
+        <a
+          href="/consultation"
           className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition-colors text-sm font-semibold"
         >
-          Request Custom Document
-        </Link>
+          Book Consultation
+        </a>
       </section>
     </div>
   );

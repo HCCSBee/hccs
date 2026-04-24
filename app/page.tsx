@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AIHROverlayTrigger from "@/components/AIHROverlayTrigger";
+import { supabase } from "@/lib/supabase/client";
 
 const stats = [
 	{ value: "1000+", label: "Clients Trust Us" },
@@ -11,39 +12,103 @@ const stats = [
 
 const services = [
 	{
-		title: "New EP/PR Application and Renewals",
+		slug: "employment-pass",
+		title: "New EP/PR Application & Renewals",
 		description:
-			"Strategic guidance for professionals earning S$5,600+ with eligibility checks and end-to-end support.",
+			"Strategic guidance for professionals earning S$5,600+. Eligibility assessment and comprehensive application support.",
 	},
 	{
-		title: "HR Compliance and Advisory",
+		slug: "permanent-residence",
+		title: "Permanent Residency",
 		description:
-			"Meet MOM requirements, reduce regulatory risk, and improve approval outcomes with practical HR governance.",
+			"Secure your long-term future in Singapore with expert handling of PTS scheme applications for pass holders.",
 	},
 	{
+		slug: "entrepass",
+		title: "EntrePass & Startup",
+		description:
+			"For foreign entrepreneurs wanting to start a business, with complete incorporation and visa strategy.",
+	},
+	{
+		slug: "hr-compliance-audit",
+		title: "HR Compliance & Advisory",
+		description:
+			"Ensure your company meets all MOM regulatory requirements, avoid penalties, and improve approval odds.",
+	},
+	{
+		slug: "aihr-retainer",
 		title: "AI HR",
 		description:
-			"Tech-enabled, cost-effective HR support for SMEs looking to scale with better process consistency.",
+			"AI-powered HR guidance and compliance monitoring backed by expert advisory.",
 	},
 	{
+		slug: "market-entry",
+		title: "Singapore Market Entry & Business Setup",
+		description:
+			"Helping foreign founders establish and operate in Singapore with full compliance.",
+	},
+	{
+		slug: "fractional-hr",
 		title: "Fractional HR Business Partner",
 		description:
-			"Access senior HR leadership part-time or by project to drive strategic hiring and organizational change.",
+			"Access senior HR leadership on a part-time or project basis to drive strategic initiatives.",
 	},
 	{
-		title: "Workforce Planning and Organisation Design",
+		slug: "workforce-planning",
+		title: "Workforce Planning & Organisation Design",
 		description:
-			"Align team capability, automation, and AI readiness with your business growth roadmap.",
+			"Align workforce capabilities with growth plans, automation, and AI readiness.",
 	},
 	{
-		title: "Learning and Development",
+		slug: "learning-development",
+		title: "Learning & Development",
 		description:
-			"Strategic upskilling and AI-focused training initiatives to future-proof your workforce.",
+			"Strategic upskilling and AI-focused training to future-proof your workforce.",
 	},
 	{
-		title: "Performance and Culture",
+		slug: "performance-culture",
+		title: "Performance & Culture",
 		description:
-			"Build high-performing teams with better OKRs, KPIs, leadership rhythms, and accountability.",
+			"Building high-performing teams through OKRs, KPIs, and leadership development.",
+	},
+];
+
+const consultancyPillars = [
+	{
+		title: "Singapore Market Entry & Business Setup",
+		description:
+			"Helping foreign founders establish and operate in Singapore with full compliance.",
+	},
+	{
+		title: "Work Pass & Residency Strategy",
+		description:
+			"Strategic EP, EntrePass, and PR solutions designed to improve approval success.",
+	},
+	{
+		title: "HR Compliance & Risk Advisory",
+		description:
+			"Protect your business with structured HR frameworks aligned to Singapore regulations.",
+	},
+	{
+		title: "AIHR Compliance Intelligence Platform",
+		description:
+			"AI-powered HR guidance and compliance monitoring backed by expert advisory, not a standalone AI service.",
+	},
+];
+
+const consultancyGallery = [
+	{
+		title: "Consultant-led guidance",
+		caption: "Clear HR compliance advice delivered by experienced professionals, not a chatbot-only workflow.",
+		image: "/images/new_hero.png",
+		alt: "HCCS consultants and professional advisory team",
+	},
+	{
+		title: "Multiple services under one firm",
+		caption: "From compliance reviews and immigration support to fractional HR and workforce planning, HCCS covers the full operating picture.",
+		image:
+			"https://p16-common-sign.tiktokcdn.com/tos-alisg-i-photomode-sg/577d53a5ec9142e38d397d209dd55e5e~tplv-photomode-image.jpeg?dr=14555&x-expires=1776985200&x-signature=HWPGsz0xIQ%2BED89i0b4OJtVxnKY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=9b759fb9&idc=my3&ftpl=1",
+		alt: "HCCS service and compliance advisory presentation",
 	},
 ];
 
@@ -52,45 +117,6 @@ const advantagePoints = [
 	"End-to-end support from business setup and immigration to compliance and daily HR operations.",
 	"AI-powered HR services and membership options for faster response and stronger execution.",
 	"Bilingual support and advisory that balances business speed with legal and regulatory discipline.",
-];
-
-const insightLinks = [
-	{
-		url: "https://www.tiktok.com/@askbeebeesghr/video/7574314970700320007",
-		image:
-			"https://p16-common-sign.tiktokcdn.com/tos-alisg-i-photomode-sg/19352c1672d84a0c85fe923388bb6ebb~tplv-photomode-image.jpeg?dr=14555&x-expires=1776985200&x-signature=lKQnBc7dCX7Jn56spPw%2BOxTBniw%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=9b759fb9&idc=my3&ftpl=1",
-		title: "Expert Insights",
-	},
-	{
-		url: "https://www.tiktok.com/@askbeebeesghr/video/7573168450344865042",
-		image:
-			"https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oYPDEo2Ggx8RAQnYpJQAnfFLEoByUUfmBEI6Du~tplv-tiktokx-origin.image?dr=14575&x-expires=1776985200&x-signature=5biqudH6v7EKmu736EzEvihllFM%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my3",
-		title: "HR Compliance Guide",
-	},
-	{
-		url: "https://www.tiktok.com/@askbeebeesghr/video/7572807734526020882",
-		image:
-			"https://p16-common-sign.tiktokcdn.com/tos-alisg-i-photomode-sg/577d53a5ec9142e38d397d209dd55e5e~tplv-photomode-image.jpeg?dr=14555&x-expires=1776985200&x-signature=HWPGsz0xIQ%2BED89i0b4OJtVxnKY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=9b759fb9&idc=my3&ftpl=1",
-		title: "Business Strategy Tips",
-	},
-	{
-		url: "https://www.tiktok.com/@askbeebeesghr/video/7581376848811035912",
-		image:
-			"https://p16-sign-sg.tiktokcdn.com/tos-alisg-p-0037/oUEJxAREIBAfDQBsApAgWWENUCFY77NDnMOZei~tplv-tiktokx-dmt-logom:tos-alisg-i-0068/o82Epi2PiZiYhATIdAA09l9ABvaBA09UKEdGA.image?dr=14573&x-expires=1776985200&x-signature=FmJQU%2FV0AhMPK%2F9pF8PJQvvE5r4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my3",
-		title: "Workforce Management",
-	},
-	{
-		url: "https://www.tiktok.com/@askbeebeesghr/video/7582825411839593748",
-		image:
-			"https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oUUD2sPEEkdAI5FgpaeA7m5fqskRBGEO7EBHvp~tplv-tiktokx-origin.image?dr=14575&x-expires=1776985200&x-signature=jSAgGkMCECsRQK6OxaVVZ3knBAY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my3",
-		title: "Compliance Updates",
-	},
-	{
-		url: "https://www.tiktok.com/@askbeebeesghr/video/7575441231510129927",
-		image:
-			"https://p16-common-sign.tiktokcdn.com/tos-alisg-i-photomode-sg/7558ff7ea1b9450dacec61f0f7a1ec7c~tplv-photomode-image.jpeg?dr=14555&x-expires=1776985200&x-signature=8Y7%2FeeUSwDk2AVqTJf24l1299IE%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=9b759fb9&idc=my3&ftpl=1",
-		title: "Growth Strategies",
-	},
 ];
 
 const partnerLogos = [
@@ -149,7 +175,14 @@ const testimonials = [
 	},
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+	const storageUrl = process.env.NEXT_PUBLIC_STORAGE_URL ?? "";
+	const { data: mediaItems } = await supabase
+		.from("media")
+		.select("id, title, short_description, image, link")
+		.order("id");
+	const insights = (mediaItems ?? []).filter((m) => m.image && m.link);
+
 	return (
 		<div className="bg-white">
 			<section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-950 to-slate-950 text-white py-20 sm:py-24 px-4">
@@ -163,12 +196,12 @@ export default function HomePage() {
 							MOM-Registered · Licensed EA Agency · 25+ Years Experience
 						</p>
 						<h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-6">
-							Start-Staff-Scale Your SG Business
+							Professional HR Compliance Consultancy For Singapore Employers
 						</h1>
 						<p className="text-base sm:text-lg text-emerald-100/90 max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
-							We provide end-to-end support to companies, from incorporation to industry-specific guidance on
-							operating in Singapore, while managing HR functions and compliance with AI-driven solutions.
+							We provide end-to-end support to companies, from incorporation to industry-specific guidance on operating in Singapore, ensuring full legal and regulatory compliance. We also manage HR functions to enable smooth operations, leveraging AI-driven solutions, including an AI-powered talent acquisition and HR services platform.
 						</p>
+
 						<div className="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4 mb-8">
 							<Link
 								href="/consultation"
@@ -201,13 +234,13 @@ export default function HomePage() {
 					<div className="relative">
 						<div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-amber-400/25 to-emerald-400/10 blur-xl" />
 						<img
-							src="https://p16-common-sign.tiktokcdn.com/tos-alisg-i-photomode-sg/577d53a5ec9142e38d397d209dd55e5e~tplv-photomode-image.jpeg?dr=14555&x-expires=1776985200&x-signature=HWPGsz0xIQ%2BED89i0b4OJtVxnKY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=9b759fb9&idc=my3&ftpl=1"
-							alt="HCCS professional team in Singapore office"
+							src="/images/new_hero.png"
+							alt="HCCS professional HR compliance consultancy team"
 							className="relative w-full rounded-3xl border border-white/15 shadow-2xl shadow-black/50"
 						/>
 						<div className="absolute -bottom-4 -left-4 sm:bottom-4 sm:-left-6 rounded-xl border border-emerald-200/25 bg-emerald-900/80 backdrop-blur px-4 py-3">
-							<p className="text-xs uppercase tracking-widest text-amber-300">Trusted Team</p>
-							<p className="text-sm font-semibold text-white">End-to-end HR and compliance delivery</p>
+							<p className="text-xs uppercase tracking-widest text-amber-300">Professional Consultancy</p>
+							<p className="text-sm font-semibold text-white">Human advisors across compliance, HR, and workforce services</p>
 						</div>
 					</div>
 				</div>
@@ -224,6 +257,37 @@ export default function HomePage() {
 				</div>
 			</section>
 
+			<section className="py-18 px-4 bg-white">
+				<div className="max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+					<div>
+						<p className="text-xs font-bold text-amber-700 uppercase tracking-[0.24em] mb-3">Important Clarification</p>
+						<h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4">
+							HCCS Is A Consultancy Firm, Not A Standalone AI HR Service
+						</h2>
+						<p className="text-slate-700 leading-relaxed mb-6 max-w-2xl">
+							If you engage HCCS, you are working with a professional HR compliance consultancy firm that provides
+							end-to-end HR consulting services in Singapore, from work pass and residency strategy to compliance,
+							workforce planning, and business setup support.
+						</p>
+						<div className="grid sm:grid-cols-2 gap-4">
+							{consultancyPillars.map((pillar) => (
+								<div key={pillar.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+									<h3 className="font-semibold text-slate-900 mb-2">{pillar.title}</h3>
+									<p className="text-sm text-slate-600 leading-relaxed">{pillar.description}</p>
+								</div>
+							))}
+						</div>
+					</div>
+					<div className="rounded-[2rem] overflow-hidden border border-emerald-100 shadow-xl shadow-emerald-950/10 bg-white">
+						<img
+							src="/images/new_hero.png"
+							alt="HCCS consultancy team portrait"
+							className="w-full h-full object-cover"
+						/>
+					</div>
+				</div>
+			</section>
+
 			<section className="relative py-20 px-4 bg-gradient-to-b from-white via-emerald-50/40 to-white overflow-hidden">
 				<div className="pointer-events-none absolute inset-0">
 					<div className="absolute top-10 left-1/3 h-32 w-32 rounded-full bg-amber-300/30 blur-3xl" />
@@ -233,12 +297,13 @@ export default function HomePage() {
 					<p className="text-center text-xs font-bold text-amber-700 uppercase tracking-[0.22em]">Our Services</p>
 					<h2 className="text-3xl sm:text-4xl font-extrabold text-center text-slate-900 mt-3 mb-3">Strategic HR Solutions Built To Scale</h2>
 					<p className="text-center text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed">
-						HCCS offers practical, execution-ready HR and compliance services aligned with evolving workforce and AI trends.
+						HCCS offers end-to-end HR consulting services in Singapore. AIHR is one supported platform within a broader professional advisory offering.
 					</p>
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 						{services.map((service, index) => (
-							<div
+							<Link
 								key={service.title}
+								href={`/services/${service.slug}`}
 								className="group relative rounded-2xl border border-emerald-100 bg-white/95 p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
 							>
 								<div className="absolute top-0 left-0 h-1.5 w-full rounded-t-2xl bg-gradient-to-r from-amber-400 via-emerald-500 to-teal-500" />
@@ -248,7 +313,7 @@ export default function HomePage() {
 								<h3 className="font-semibold text-slate-900 mb-2 group-hover:text-emerald-700 transition-colors">{service.title}</h3>
 								<p className="text-sm text-slate-600 leading-relaxed">{service.description}</p>
 								<div className="mt-5 text-xs font-semibold uppercase tracking-widest text-emerald-700/80">Learn more</div>
-							</div>
+							</Link>
 						))}
 					</div>
 					<div className="text-center mt-12">
@@ -259,6 +324,32 @@ export default function HomePage() {
 							Explore Employer Services
 							<span aria-hidden>→</span>
 						</Link>
+					</div>
+				</div>
+			</section>
+
+			<section className="py-18 px-4 bg-slate-950 text-white overflow-hidden">
+				<div className="max-w-6xl mx-auto">
+					<div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+						<div>
+							<p className="text-xs font-semibold uppercase tracking-[0.22em] text-amber-300 mb-3">What HCCS Actually Delivers</p>
+							<h2 className="text-3xl sm:text-4xl font-bold">Professional Services Backed By Real Consultants</h2>
+						</div>
+						<p className="max-w-2xl text-sm sm:text-base text-slate-300 leading-relaxed">
+							The firm supports employers across setup, staffing, compliance, employee relations, and workforce planning,
+							not just AI tooling or automated responses.
+						</p>
+					</div>
+					<div className="grid md:grid-cols-2 gap-6">
+						{consultancyGallery.map((item) => (
+							<div key={item.title} className="rounded-[1.75rem] overflow-hidden border border-white/10 bg-white/5">
+								<img src={item.image} alt={item.alt} className="w-full h-72 object-cover" />
+								<div className="p-6">
+									<h3 className="text-xl font-semibold text-white mb-2">{item.title}</h3>
+									<p className="text-sm text-slate-300 leading-relaxed">{item.caption}</p>
+								</div>
+							</div>
+						))}
 					</div>
 				</div>
 			</section>
@@ -302,18 +393,18 @@ export default function HomePage() {
 						</a>
 					</div>
 					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-						{insightLinks.map((item, i) => (
-							<a
-								key={item.url}
-								href={item.url}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="bg-white border border-gray-200 rounded-xl p-5 hover:border-emerald-500 hover:shadow-sm transition-all"
-							>
-								<img src={item.image} alt={item.title} className="w-full h-56 object-cover rounded-lg mb-4" />
-								<p className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-2">Video {i + 1}</p>
-								<h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
-								<p className="text-sm text-gray-600">Curated content for Singapore business leaders.</p>
+					{insights.map((item, i) => (
+						<a
+							key={item.id}
+							href={item.link}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="bg-white border border-gray-200 rounded-xl p-5 hover:border-emerald-500 hover:shadow-sm transition-all"
+						>
+							<img src={`${storageUrl}${item.image}`} alt={item.title ?? `Video ${i + 1}`} className="w-full h-56 object-cover rounded-lg mb-4" />
+							<p className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-2">Video {i + 1}</p>
+							<h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
+							{item.short_description && <p className="text-sm text-gray-600">{item.short_description}</p>}
 							</a>
 						))}
 					</div>
@@ -352,7 +443,7 @@ export default function HomePage() {
 					<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
 						{testimonials.map((item) => (
 							<div key={`${item.name}-${item.role}`} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-								<p className="text-gray-700 text-sm leading-relaxed italic">"{item.quote}"</p>
+								<p className="text-gray-700 text-sm leading-relaxed italic">&ldquo;{item.quote}&rdquo;</p>
 								<div className="flex items-center gap-3 mt-6 pt-5 border-t border-gray-200">
 									<img src={item.image} alt={item.name} className="w-10 h-10 rounded-full object-cover object-top" />
 									<div>
@@ -369,11 +460,11 @@ export default function HomePage() {
 			<section className="py-16 px-4 bg-emerald-950 text-white relative overflow-hidden">
 				<div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-center">
 					<div>
-						<p className="text-xs uppercase tracking-widest text-amber-300 font-semibold mb-4">New: AIHR Membership Platform</p>
-						<h2 className="text-3xl sm:text-4xl font-bold mb-4">AI-Powered HR Guidance, Built for Singapore SMEs</h2>
+						<p className="text-xs uppercase tracking-widest text-amber-300 font-semibold mb-4">Optional Digital Support</p>
+						<h2 className="text-3xl sm:text-4xl font-bold mb-4">AI-Enabled Membership Access For Ongoing HR Support</h2>
 						<p className="text-emerald-100 mb-6">
-							Access instant HR compliance guidance, EP/PR support, templates, and expert video insights through HCCS's
-							AI-powered membership platform.
+							For clients who want additional speed and self-serve resources, HCCS also offers an AI-enabled membership
+							platform alongside our core consultancy services.
 						</p>
 						<div className="flex flex-wrap gap-3">
 							<Link href="/membership" className="bg-amber-400 text-emerald-950 hover:bg-amber-300 px-6 py-3 rounded-lg font-semibold">
@@ -426,7 +517,7 @@ export default function HomePage() {
 						</a>
 					</div>
 					<p className="text-sm text-gray-600 mt-6">
-						Or explore our <Link href="/membership" className="text-emerald-700 hover:text-emerald-800 underline">AIHR membership plans</Link> for ongoing HR support.
+						Or explore our <Link href="/membership" className="text-emerald-700 hover:text-emerald-800 underline">AI-enabled membership plans</Link> if you want digital support in addition to consultancy.
 					</p>
 				</div>
 			</section>
