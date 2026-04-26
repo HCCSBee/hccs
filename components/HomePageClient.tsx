@@ -162,34 +162,7 @@ export default function HomePageClient({
                 </div>
             </section>
 
-            {/* Clarification */}
-            {1 == 2 && (
-                <section className="py-18 px-4 bg-white">
-                    <div className="max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
-                        <div>
-                            <p className="text-xs font-bold text-amber-700 uppercase tracking-[0.24em] mb-3">{h.clarifyBadge}</p>
-                            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4">{h.clarifyTitle}</h2>
-                            <p className="text-slate-700 leading-relaxed mb-6 max-w-2xl">{h.clarifyDesc}</p>
-                            <div className="grid sm:grid-cols-2 gap-4">
-                                {h.consultancyPillars.map((pillar) => (
-                                    <div key={pillar.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-                                        <h3 className="font-semibold text-slate-900 mb-2">{pillar.title}</h3>
-                                        <p className="text-sm text-slate-600 leading-relaxed">{pillar.description}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="rounded-[2rem] overflow-hidden border border-emerald-100 shadow-xl shadow-emerald-950/10 bg-white">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img
-                                src="/images/new_hero.png"
-                                alt="HCCS consultancy team portrait"
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
-                    </div>
-                </section>
-            )}
+
 
 
             {/* Services */}
