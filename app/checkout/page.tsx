@@ -5,11 +5,13 @@ import { useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
+
 const PLAN_DISPLAY: Record<string, { label: string; price: string; period: string }> = {
   essential: { label: "Essential", price: "S$5,988", period: "/ year" },
 };
 
 function CheckoutContent() {
+  const dropinRef = useRef<HTMLDivElement | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const plan = searchParams.get("plan") ?? "essential";
@@ -40,30 +42,33 @@ function CheckoutContent() {
 
         // Dynamically import Airwallex to avoid SSR issues
         const awx = await import("@airwallex/components-sdk");
-
         await awx.init({
-          env:
-            (process.env.NEXT_PUBLIC_AIRWALLEX_ENV as "demo" | "sandbox" | "prod") ??
-            "sandbox",
+          env: "sandbox",
         });
-
-        const element = await awx.createElement("dropIn", {
+        
+        const element = await awx.createElement("card", {
           intent_id: data.intent_id,
           client_secret: data.client_secret,
           currency: data.currency,
         });
-
+        
         element.on("success", () => {
           router.push("/consultation-success");
         });
-
+        
         element.on("error", (err: unknown) => {
           console.error("Airwallex payment error:", err);
           setError("Payment failed. Please check your details and try again.");
         });
+        
+        // IMPORTANT: wait for DOM ref
+        if (dropinRef.current) {
+          element.mount(dropinRef.current);
+        } else {
+          throw new Error("Drop-in container not ready");
+        }
 
-        element.mount("#airwallex-dropin");
-        setLoading(false);
+
       } catch (err) {
         console.error("Checkout init error:", err);
         setError("Failed to initialize checkout. Please try again.");
@@ -72,6 +77,7 @@ function CheckoutContent() {
     })();
   }, [plan, router]);
 
+  
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-lg mx-auto">
@@ -120,14 +126,14 @@ function CheckoutContent() {
 
           {/* Payment form */}
           <div className="px-6 py-6">
-            {loading && (
+            {/* {loading && (
               <div className="flex items-center justify-center py-12">
                 <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" />
                 <span className="ml-3 text-sm text-gray-500">
                   Preparing secure checkout…
                 </span>
               </div>
-            )}
+            )} */}
 
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700 mb-4">
@@ -143,7 +149,9 @@ function CheckoutContent() {
             )}
 
             {/* Airwallex Drop-in Element mounts here */}
-            <div id="airwallex-dropin" className={loading ? "hidden" : ""} />
+            {/* <div id="airwallex-dropin" className={loading ? "hidden" : ""} /> */}
+            <div ref={dropinRef} className="min-h-[400px]" />
+            
           </div>
         </div>
 

@@ -70,7 +70,7 @@ export default function ConsultationPage() {
       <div className="text-center mb-10">
         <h1 className="text-4xl font-extrabold text-gray-900 mb-3">Book a Free Consultation</h1>
         <p className="text-gray-600">
-          Schedule a free 30-minute consultation with Florence Ker. We'll discuss your HR needs and recommend
+          Schedule a free 30-minute consultation with our consultant. We'll discuss your HR needs and recommend
           the right solutions for your business.
         </p>
       </div>

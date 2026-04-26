@@ -26,8 +26,8 @@ async function getAirwallexToken(): Promise<string> {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-client-id": process.env.AIRWALLEX_CLIENT_ID ?? "",
-      "x-api-key": process.env.AIRWALLEX_API_KEY ?? "",
+      "x-client-id": "C8r45B4aTxGXR3FB4vGZ1Q",
+      "x-api-key": "e299002b88a3254b27c7cb651ededb144c6680ac449dabd03f08c710da1b5ad92f233a31aaee7e0ba8759c7b4844148a",
       "x-api-version": apiVersion,
     },
   });

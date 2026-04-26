@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
+import nodemailer from 'nodemailer';
+
 type ConsultationPayload = {
   name?: string;
   company?: string;
@@ -44,6 +46,31 @@ export async function POST(req: Request) {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
+
+
+    var EMAIL_PASSWORD = "dalm miqk ipix vuuh";
+    var EMAIL_ADDRESS = "enquiry@hccs.sg";
+
+
+    async function sendEmail() {
+      const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587, // Use 465 for SSL or 587 for TLS
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: EMAIL_ADDRESS,
+          pass: EMAIL_PASSWORD,
+        },
+      });
+
+      await transporter.sendMail({
+        from: EMAIL_ADDRESS,
+        to: body.email,
+        subject: 'Your Compliance Scan Report',
+        text: "TEST",
+      });
+    }
+
 
     return NextResponse.json({ ok: true }, { status: 200 });
   } catch {

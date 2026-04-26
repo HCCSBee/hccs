@@ -244,7 +244,7 @@ export default function ComplianceScanQuestionsPage() {
     setAnswers((prev) => ({ ...prev, [questionId]: { optionIndex, score } }));
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
     setProcessing(true);
     const { totalScore, riskLevel, hasCriticalOverride } = calcResult(answers);
     const primaryRisk = getPrimaryRisk(answers);
@@ -270,23 +270,47 @@ export default function ComplianceScanQuestionsPage() {
     const raw = sessionStorage.getItem("cs_company");
     const companyData = raw ? JSON.parse(raw) : {};
 
-    supabase
-      .from("compliance_scan")
-      .insert({
-        company_name: companyData.company ?? null,
-        contact_name: companyData.name ?? null,
-        business_email: companyData.email ?? null,
-        contact_number: companyData.phone ?? null,
-        industry: companyData.industry ?? null,
-        employess: companyData.size ?? null,
-        has_foreign_workers: companyData.foreignWorkers === true ? 1 : 0,
-        results: resultsPayload,
-      })
-      .then(() => {
-        setProcessing(false);
+    var _form = {
+      company_name: companyData.company ?? null,
+      contact_name: companyData.name ?? null,
+      business_email: companyData.email ?? null,
+      contact_number: companyData.phone ?? null,
+      industry: companyData.industry ?? null,
+      employess: companyData.size ?? null,
+      has_foreign_workers: companyData.foreignWorkers === true ? 1 : 0,
+      results: (resultsPayload),
+    }
+
+    const res = await fetch("/api/compliance", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ..._form }),
+    });
+
+    var data = await res.json();
+    if(res.ok){
+      setProcessing(false);
         setSubmitted(true);
         window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+    }
+     
+    // supabase
+    //   .from("compliance_scan")
+    //   .insert({
+    //     company_name: companyData.company ?? null,
+    //     contact_name: companyData.name ?? null,
+    //     business_email: companyData.email ?? null,
+    //     contact_number: companyData.phone ?? null,
+    //     industry: companyData.industry ?? null,
+    //     employess: companyData.size ?? null,
+    //     has_foreign_workers: companyData.foreignWorkers === true ? 1 : 0,
+    //     results: resultsPayload,
+    //   })
+    //   .then(() => {
+    //     setProcessing(false);
+    //     setSubmitted(true);
+    //     window.scrollTo({ top: 0, behavior: "smooth" });
+    //   });
   }
 
   function handleExportPDF() {
@@ -460,11 +484,10 @@ export default function ComplianceScanQuestionsPage() {
                     <button
                       key={opt.text}
                       onClick={() => handleSelect(q.id, optIdx, opt.score)}
-                      className={`w-full text-left px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                        currentAnswer?.optionIndex === optIdx
+                      className={`w-full text-left px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all ${currentAnswer?.optionIndex === optIdx
                           ? "bg-emerald-600 text-white border-emerald-600"
                           : "bg-white text-slate-700 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50"
-                      }`}
+                        }`}
                     >
                       {opt.text}
                     </button>
