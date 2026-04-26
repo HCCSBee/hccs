@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useLang } from "@/lib/i18n";
 
 type ProfileData = {
   id: string;
@@ -15,26 +16,7 @@ type ProfileData = {
   sections: Array<{ heading: string; items: string[] }>;
 };
 
-const visionMissionBelief = [
-  {
-    icon: "award",
-    title: "Our Vision",
-    description:
-      "To be a trusted partner and steady backbone for business owners and global talent - delivering people-first, compliant, and forward-looking HR solutions.",
-  },
-  {
-    icon: "users",
-    title: "Our Mission",
-    description:
-      "We support entrepreneurs, SMEs, multinational companies, and foreign professionals through every stage of their journey - from business setup and immigration to HR management, statutory compliance, and AI-enabled HR solutions.",
-  },
-  {
-    icon: "heart",
-    title: "Our Belief",
-    description:
-      '"We are not just here to process documents or manage compliance. We exist to carry the weight behind the scenes - so our clients can move forward 安心、踏实、从心出发。"',
-  },
-];
+const visionIcons = ["award", "users", "heart"] as const;
 
 const values = [
   {
@@ -288,6 +270,8 @@ const advisors = [
 ];
 
 export default function AboutPageClient() {
+  const { t } = useLang();
+  const a = t.about;
   const [activeProfileId, setActiveProfileId] = useState<string | null>(null);
   const activeProfile = activeProfileId ? profileData[activeProfileId] : null;
 
@@ -306,9 +290,9 @@ export default function AboutPageClient() {
     <main className="min-h-screen bg-white">
       <section className="relative bg-gradient-to-br from-emerald-900 via-emerald-950 to-slate-950 text-white py-24 overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <h1 className="text-5xl sm:text-6xl font-bold mb-4">About Us</h1>
+          <h1 className="text-5xl sm:text-6xl font-bold mb-4">{a.heroTitle}</h1>
           <p className="text-emerald-100 text-lg max-w-2xl mx-auto">
-            Strategically building your Singapore workforce with expertise and integrity.
+            {a.heroDesc}
           </p>
         </div>
       </section>
@@ -316,23 +300,23 @@ export default function AboutPageClient() {
       <section className="py-16 sm:py-20 lg:py-24 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
-            {visionMissionBelief.map((item, index) => (
+            {a.visionMissionBelief.map((item, index) => (
               <div
                 key={index}
                 className="bg-white border border-emerald-100 rounded-2xl p-8 hover:shadow-lg hover:border-emerald-300 transition-all"
               >
                 <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center mb-4">
-                  {item.icon === "award" && (
+                  {visionIcons[index] === "award" && (
                     <svg className="w-6 h-6 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m9 12 2 2 4-4m7.773-4.355A10 10 0 1 1 2.227 10.645" />
                     </svg>
                   )}
-                  {item.icon === "users" && (
+                  {visionIcons[index] === "users" && (
                     <svg className="w-6 h-6 text-emerald-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 1 1 0 8.048M9 11H3v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8h-6m0-1v1m0 0a4 4 0 1 1 8 0m-4-4v4" />
                     </svg>
                   )}
-                  {item.icon === "heart" && (
+                  {visionIcons[index] === "heart" && (
                     <svg className="w-6 h-6 text-emerald-700" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                     </svg>
@@ -403,8 +387,9 @@ export default function AboutPageClient() {
                 type="button"
                 onClick={() => setActiveProfileId("florence")}
                 className="inline-flex items-center gap-2 bg-emerald-900 hover:bg-emerald-950 text-white font-semibold px-6 py-3 rounded-lg transition-all hover:shadow-lg"
+                suppressHydrationWarning
               >
-                View Full Profile
+                {a.readProfile}
               </button>
             </div>
           </div>
@@ -414,7 +399,7 @@ export default function AboutPageClient() {
       <section className="py-16 sm:py-20 lg:py-24 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-3">Our Values</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-3">{a.valuesTitle}</h2>
             <div className="w-12 h-1 bg-emerald-600 rounded-full mx-auto"></div>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -448,7 +433,7 @@ export default function AboutPageClient() {
 
       <section className="py-16 sm:py-20 lg:py-24 bg-emerald-900">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-white text-center mb-16">Our Partners &amp; Senior Advisors</h2>
+          <h2 className="text-4xl font-bold text-white text-center mb-16">{a.advisorsTitle}</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {advisors.map((advisor) => (
               <div key={advisor.name} className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-lg hover:border-emerald-400 transition-all">
@@ -468,8 +453,9 @@ export default function AboutPageClient() {
                   type="button"
                   onClick={() => setActiveProfileId(advisor.id)}
                   className="mt-4 text-xs font-semibold text-emerald-900 hover:text-emerald-700 transition-colors flex items-center gap-1"
+                  suppressHydrationWarning
                 >
-                  VIEW PROFILE -&gt;
+                  {a.readProfile} -&gt;
                 </button>
               </div>
             ))}
@@ -479,7 +465,7 @@ export default function AboutPageClient() {
 
       <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-r from-emerald-50 to-amber-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Ready to Work With Us?</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t.common.bookFreeConsultation}</h2>
           <p className="text-gray-600 mb-8 text-lg">Book a free 30-minute consultation to discuss your HR and workforce needs.</p>
           <Link
             href="/consultation"
@@ -488,7 +474,7 @@ export default function AboutPageClient() {
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            Book Consultation
+            {t.common.bookFreeConsultation}
           </Link>
         </div>
       </section>

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
+import { useLang } from "@/lib/i18n";
 
 type Option = { text: string; score: number };
 type Question = {
@@ -15,112 +16,18 @@ type Question = {
   criticalOverride?: boolean;
 };
 
-const questions: Question[] = [
-  {
-    id: 1,
-    question: "Do you currently employ foreign workers such as EP, S Pass or Work Permit holders?",
-    category: "Workforce Complexity",
-    options: [
-      { text: "Yes, many", score: 1 },
-      { text: "Yes, a few", score: 1 },
-      { text: "No", score: 0 },
-    ],
-  },
-  {
-    id: 2,
-    question: "Are CPF contributions calculated and submitted with proper checks in place?",
-    category: "CPF",
-    options: [
-      { text: "Yes, with clear internal checks", score: 0 },
-      { text: "Yes, but checks are informal", score: 1 },
-      { text: "Not sure or fully outsourced without checks", score: 2 },
-    ],
-    criticalOverride: true,
-  },
-  {
-    id: 3,
-    question: "Do all employees have updated employment contracts aligned with MOM Key Employment Terms?",
-    category: "MOM",
-    options: [
-      { text: "Yes, reviewed within last 12 months", score: 0 },
-      { text: "Yes, but not recently reviewed", score: 1 },
-      { text: "No or not sure", score: 2 },
-    ],
-    criticalOverride: true,
-  },
-  {
-    id: 4,
-    question: "Do you issue itemised payslips in line with MOM requirements?",
-    category: "MOM",
-    options: [
-      { text: "Yes", score: 0 },
-      { text: "Partially", score: 1 },
-      { text: "No", score: 2 },
-    ],
-    criticalOverride: true,
-  },
-  {
-    id: 5,
-    question: "Are your foreign employees' job roles, salaries and responsibilities aligned with MOM expectations?",
-    category: "MOM",
-    options: [
-      { text: "Yes", score: 0 },
-      { text: "Not fully sure", score: 1 },
-      { text: "No", score: 2 },
-    ],
-    criticalOverride: true,
-  },
-  {
-    id: 6,
-    question: "Do you maintain proper HR records such as leave, attendance, contracts and warning letters?",
-    category: "MOM",
-    options: [
-      { text: "Yes, in a structured system", score: 0 },
-      { text: "Partially", score: 1 },
-      { text: "No", score: 2 },
-    ],
-  },
-  {
-    id: 7,
-    question: "Do you have a clear process for employee termination and dispute handling?",
-    category: "MOM",
-    options: [
-      { text: "Yes", score: 0 },
-      { text: "Informal only", score: 1 },
-      { text: "No", score: 2 },
-    ],
-  },
-  {
-    id: 8,
-    question: "Does your company follow fair hiring practices and avoid potentially discriminatory recruitment language?",
-    category: "TAFEP",
-    options: [
-      { text: "Yes", score: 0 },
-      { text: "Not fully sure", score: 1 },
-      { text: "No", score: 2 },
-    ],
-    criticalOverride: true,
-  },
-  {
-    id: 9,
-    question: "Do you actively monitor updates from MOM, CPF and TAFEP?",
-    category: "Governance",
-    options: [
-      { text: "Yes, regularly", score: 0 },
-      { text: "Occasionally", score: 1 },
-      { text: "No", score: 2 },
-    ],
-  },
-  {
-    id: 10,
-    question: "Do you have dedicated HR expertise, either internal or external, supporting compliance matters?",
-    category: "Governance",
-    options: [
-      { text: "Yes", score: 0 },
-      { text: "Partial support only", score: 1 },
-      { text: "No", score: 2 },
-    ],
-  },
+// Scores only — text comes from locale
+const questionMeta = [
+  { id: 1, scores: [1, 1, 0] },
+  { id: 2, scores: [0, 1, 2], criticalOverride: true },
+  { id: 3, scores: [0, 1, 2], criticalOverride: true },
+  { id: 4, scores: [0, 1, 2], criticalOverride: true },
+  { id: 5, scores: [0, 1, 2], criticalOverride: true },
+  { id: 6, scores: [0, 1, 2] },
+  { id: 7, scores: [0, 1, 2] },
+  { id: 8, scores: [0, 1, 2], criticalOverride: true },
+  { id: 9, scores: [0, 1, 2] },
+  { id: 10, scores: [0, 1, 2] },
 ];
 
 const categoryMap: Record<string, number[]> = {
@@ -136,7 +43,7 @@ type AnswerRecord = Record<number, { optionIndex: number; score: number }>;
 function calcResult(answers: AnswerRecord) {
   let totalScore = 0;
   let hasCriticalOverride = false;
-  questions.forEach((q) => {
+  questionMeta.forEach((q) => {
     const a = answers[q.id];
     if (a) {
       totalScore += a.score;
@@ -149,79 +56,52 @@ function calcResult(answers: AnswerRecord) {
   return { totalScore, riskLevel, hasCriticalOverride };
 }
 
-function getPrimaryRisk(answers: AnswerRecord) {
+function getPrimaryRisk(answers: AnswerRecord, mixedLabel: string, generalLabel: string) {
   const categoryScores: Record<string, number> = {};
   Object.entries(categoryMap).forEach(([cat, ids]) => {
     categoryScores[cat] = ids.reduce((sum, id) => sum + (answers[id]?.score ?? 0), 0);
   });
   const max = Math.max(...Object.values(categoryScores));
   const top = Object.entries(categoryScores).filter(([, v]) => v === max).map(([k]) => k);
-  return top.length > 1 ? "Mixed Compliance Risk" : top[0] ?? "General Compliance";
+  return top.length > 1 ? mixedLabel : top[0] ?? generalLabel;
 }
 
-function getAlerts(answers: AnswerRecord): string[] {
+function getAlerts(answers: AnswerRecord, momAlert: string, cpfAlert: string, tafepAlert: string): string[] {
   const alerts: string[] = [];
   const momScore = categoryMap.MOM.reduce((s, id) => s + (answers[id]?.score ?? 0), 0);
-  if (momScore > 0) alerts.push("MOM Risk Alert: Possible gaps in contracts, payslips, records or termination process.");
+  if (momScore > 0) alerts.push(momAlert);
   const cpfAnswer = answers[2];
-  if (cpfAnswer && cpfAnswer.score > 0) alerts.push("CPF Risk Alert: CPF process may lack verification or control.");
+  if (cpfAnswer && cpfAnswer.score > 0) alerts.push(cpfAlert);
   const tafepAnswer = answers[8];
-  if (tafepAnswer && tafepAnswer.score > 0) alerts.push("TAFEP Risk Alert: Recruitment practices may not align with fair employment principles.");
+  if (tafepAnswer && tafepAnswer.score > 0) alerts.push(tafepAlert);
   return alerts;
 }
 
-const riskConfig = {
-  LOW: {
-    label: "Low Risk",
-    color: "text-green-600",
-    bar: "bg-green-500",
-    border: "border-green-200",
-    bg: "bg-green-50",
-    subtitle: "Your company has solid HR compliance foundations",
-    description: "Your responses indicate a generally sound HR compliance structure. Continue periodic reviews to stay aligned with evolving regulations.",
-    recommendations: [
-      "Maintain current compliance processes",
-      "Schedule quarterly HR compliance audits",
-      "Monitor MOM updates regularly",
-      "Document all HR policies",
-    ],
-  },
-  MEDIUM: {
-    label: "Medium Risk",
-    color: "text-amber-600",
-    bar: "bg-amber-500",
-    border: "border-amber-200",
-    bg: "bg-amber-50",
-    subtitle: "Several compliance areas need attention",
-    description: "While no immediate critical issues detected, addressing identified gaps will reduce regulatory and operational risk.",
-    recommendations: [
-      "Review and update employment contracts",
-      "Strengthen HR documentation systems",
-      "Conduct fair hiring practice audit",
-      "Schedule compliance review with expert",
-    ],
-  },
-  HIGH: {
-    label: "High Risk",
-    color: "text-red-600",
-    bar: "bg-red-500",
-    border: "border-red-200",
-    bg: "bg-red-50",
-    subtitle: "Critical compliance gaps require immediate attention",
-    description: "Your company has critical HR compliance areas that need urgent review. Taking immediate action will significantly reduce regulatory exposure.",
-    recommendations: [
-      "Book urgent compliance review",
-      "Create corrective action plan",
-      "Audit all employment documentation",
-      "Review foreign worker management",
-    ],
-  },
+const riskColors = {
+  LOW:    { color: "text-green-600",  bar: "bg-green-500",  border: "border-green-200",  bg: "bg-green-50"  },
+  MEDIUM: { color: "text-amber-600",  bar: "bg-amber-500",  border: "border-amber-200",  bg: "bg-amber-50"  },
+  HIGH:   { color: "text-red-600",    bar: "bg-red-500",    border: "border-red-200",    bg: "bg-red-50"    },
 };
 
 const StepIndicator = ({ activeStep: _activeStep }: { activeStep: number }) => null;
 
 export default function ComplianceScanQuestionsPage() {
   const router = useRouter();
+  const { t } = useLang();
+  const qp = t.complianceScan.questionsPage;
+  const steps = t.complianceScan.steps;
+
+  // Build questions from locale text + static scores
+  const questions: Question[] = qp.questions.map((locQ, idx) => ({
+    id: idx + 1,
+    question: locQ.question,
+    category: Object.entries(categoryMap).find(([, ids]) => ids.includes(idx + 1))?.[0] ?? "",
+    options: locQ.options.map((text, optIdx) => ({
+      text,
+      score: questionMeta[idx].scores[optIdx] ?? 0,
+    })),
+    criticalOverride: questionMeta[idx].criticalOverride,
+  }));
   const [answers, setAnswers] = useState<AnswerRecord>({});
   const [processing, setProcessing] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -239,6 +119,7 @@ export default function ComplianceScanQuestionsPage() {
 
   const answered = Object.keys(answers).length;
   const allAnswered = answered === questions.length;
+  const progress = (answered / questions.length) * 100;
 
   function handleSelect(questionId: number, optionIndex: number, score: number) {
     setAnswers((prev) => ({ ...prev, [questionId]: { optionIndex, score } }));
@@ -247,8 +128,8 @@ export default function ComplianceScanQuestionsPage() {
   async function handleSubmit() {
     setProcessing(true);
     const { totalScore, riskLevel, hasCriticalOverride } = calcResult(answers);
-    const primaryRisk = getPrimaryRisk(answers);
-    const alerts = getAlerts(answers);
+    const primaryRisk = getPrimaryRisk(answers, qp.mixedRisk, qp.generalCompliance);
+    const alerts = getAlerts(answers, qp.momAlert, qp.cpfAlert, qp.tafepAlert);
     const resultsPayload = {
       totalScore,
       riskLevel,
@@ -322,8 +203,8 @@ export default function ComplianceScanQuestionsPage() {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto mb-6" />
-          <h2 className="text-xl font-bold text-slate-900 mb-2">Analysing Your Responses</h2>
-          <p className="text-slate-500 text-sm">AIHR is now analysing your responses based on key Singapore HR compliance risk indicators.</p>
+          <h2 className="text-xl font-bold text-slate-900 mb-2">{qp.analysing}</h2>
+          <p className="text-slate-500 text-sm">{qp.analysingDesc}</p>
         </div>
       </div>
     );
@@ -331,10 +212,10 @@ export default function ComplianceScanQuestionsPage() {
 
   if (submitted) {
     const { totalScore, riskLevel } = calcResult(answers);
-    const primaryRisk = getPrimaryRisk(answers);
-    const alerts = getAlerts(answers);
-    const cfg = riskConfig[riskLevel];
-    const maxScore = questions.reduce((s, q2) => s + Math.max(...q2.options.map((o) => o.score)), 0);
+    const primaryRisk = getPrimaryRisk(answers, qp.mixedRisk, qp.generalCompliance);
+    const alerts = getAlerts(answers, qp.momAlert, qp.cpfAlert, qp.tafepAlert);
+    const cfg = { ...riskColors[riskLevel], ...qp.riskLevels[riskLevel] };
+    const maxScore = questionMeta.reduce((s, q2) => s + Math.max(...q2.scores), 0);
     const riskPct = maxScore > 0 ? Math.round((totalScore / maxScore) * 100) : 0;
 
     return (
@@ -343,21 +224,21 @@ export default function ComplianceScanQuestionsPage() {
           <StepIndicator activeStep={3} />
 
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-extrabold text-slate-900 mb-1">Your Compliance Results</h1>
+            <h1 className="text-3xl font-extrabold text-slate-900 mb-1">{qp.resultsHeading}</h1>
             {company && <p className="text-slate-500 text-sm">{company.company}</p>}
           </div>
 
           <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8 mb-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-1">Total Score</p>
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-1">{qp.totalScore}</p>
                 <p className="text-5xl font-extrabold text-slate-900">
                   {totalScore}
-                  <span className="text-xl text-slate-400 font-normal ml-1">out of {maxScore} points</span>
+                  <span className="text-xl text-slate-400 font-normal ml-1">{qp.outOf} {maxScore} {qp.points}</span>
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-1">Risk Level</p>
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wide mb-1">{qp.riskLevelLabel}</p>
                 <p className={`text-2xl font-bold ${cfg.color}`}>{cfg.label}</p>
               </div>
             </div>
@@ -370,7 +251,7 @@ export default function ComplianceScanQuestionsPage() {
             <p className="text-sm text-slate-500 mb-6">{cfg.description}</p>
 
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">Primary Risk:</span>
+              <span className="text-xs font-medium text-slate-400 uppercase tracking-wide">{qp.primaryRiskLabel}</span>
               <span className="text-sm font-semibold text-slate-700">{primaryRisk}</span>
             </div>
 
@@ -385,13 +266,13 @@ export default function ComplianceScanQuestionsPage() {
             )}
 
             <div className="border border-slate-100 rounded-xl p-4 mb-4">
-              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">Category Risk Breakdown</h3>
+              <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">{qp.breakdownTitle}</h3>
               <div className="space-y-2">
                 {Object.entries(categoryMap).map(([cat, ids]) => {
                   const catScore = ids.reduce((s, id) => s + (answers[id]?.score ?? 0), 0);
                   const catMax = ids.reduce((s, id) => {
-                    const qItem = questions.find((qi) => qi.id === id);
-                    return s + (qItem ? Math.max(...qItem.options.map((o) => o.score)) : 0);
+                    const meta = questionMeta.find((qi) => qi.id === id);
+                    return s + (meta ? Math.max(...meta.scores) : 0);
                   }, 0);
                   const pct = catMax > 0 ? Math.round((catScore / catMax) * 100) : 0;
                   return (
@@ -411,7 +292,7 @@ export default function ComplianceScanQuestionsPage() {
             </div>
 
             <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-              <h3 className="font-semibold text-slate-800 text-sm mb-3">Next Steps</h3>
+              <h3 className="font-semibold text-slate-800 text-sm mb-3">{qp.nextStepsTitle}</h3>
               <ul className="space-y-1.5">
                 {cfg.recommendations.map((rec) => (
                   <li key={rec} className="text-sm text-slate-600 flex gap-2">
@@ -424,7 +305,7 @@ export default function ComplianceScanQuestionsPage() {
           </div>
 
           <p className="text-xs text-slate-400 text-center mb-6 print:hidden">
-            This assessment is based on your responses and provides guidance only — not legal advice.
+            {qp.disclaimer}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 print:hidden">
@@ -432,7 +313,7 @@ export default function ComplianceScanQuestionsPage() {
               href="/consultation"
               className="flex-1 text-center bg-emerald-600 text-white py-3 rounded-xl font-semibold hover:bg-emerald-700 transition-colors"
             >
-              Book Expert Review
+              {qp.bookReview}
             </Link>
             <button
               onClick={handleExportPDF}
@@ -441,7 +322,7 @@ export default function ComplianceScanQuestionsPage() {
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
               </svg>
-              Download Report (PDF)
+              {qp.downloadPDF}
             </button>
           </div>
         </div>
@@ -449,16 +330,14 @@ export default function ComplianceScanQuestionsPage() {
     );
   }
 
-  const progress = (answered / questions.length) * 100;
-
   return (
     <div className="min-h-screen bg-slate-50 px-4 py-16">
       <div className="max-w-2xl mx-auto">
         <StepIndicator activeStep={2} />
 
         <div className="flex items-center justify-between mb-2">
-          <h1 className="text-xl font-bold text-slate-900">HR Compliance Questions</h1>
-          <span className="text-sm text-slate-500">{answered}/{questions.length} answered</span>
+          <h1 className="text-xl font-bold text-slate-900">{qp.heading}</h1>
+          <span className="text-sm text-slate-500">{answered}/{questions.length} {qp.answeredLabel}</span>
         </div>
 
         <div className="w-full bg-slate-200 rounded-full h-2 mb-8">
@@ -503,14 +382,14 @@ export default function ComplianceScanQuestionsPage() {
             href="/compliance-scan/intro"
             className="px-6 py-3 border border-slate-300 text-slate-600 rounded-xl font-medium text-sm hover:bg-slate-50 transition-colors"
           >
-            ← Back
+            {qp.back}
           </Link>
           <button
             disabled={!allAnswered}
             onClick={handleSubmit}
             className="flex-1 bg-emerald-600 text-white py-3 rounded-xl font-semibold hover:bg-emerald-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {allAnswered ? "Get My Compliance Score →" : `Answer all ${questions.length} questions to continue`}
+            {allAnswered ? qp.submitReady : qp.submitWaiting}
           </button>
         </div>
       </div>

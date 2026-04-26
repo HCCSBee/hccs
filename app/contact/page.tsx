@@ -2,6 +2,8 @@
 
 export const dynamic = "force-dynamic";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useLang } from "@/lib/i18n";
 
 const industries = [
   "Retail","F&B","Construction","Manufacturing","Trading","Services","Recruitment",
@@ -22,41 +24,58 @@ const servicesOfInterest = [
 ];
 
 export default function ContactPage() {
+  const router = useRouter();
+  const { t } = useLang();
+  const c = t.contact;
   const [form, setForm] = useState({
     name: "", company: "", email: "", phone: "",
     industry: "", service: "", message: "",
   });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
+    setError("");
+
+    const res = await fetch("/api/consultation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
     setLoading(false);
-    setSent(true);
+
+    if (!res.ok) {
+      const data = (await res.json().catch(() => null)) as { error?: string } | null;
+      setError(data?.error || c.errorFallback);
+      return;
+    }
+
+    router.push("/consultation-success");
   };
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
       {/* Info */}
       <div>
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">Contact Us</h1>
-        <p className="text-gray-600 mb-8">
-          We'd love to hear from you. Reach out and let's start a conversation. We typically reply within 1–2 business days.
-        </p>
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-4">{c.title}</h1>
+        <p className="text-gray-600 mb-8">{c.subtitle}</p>
 
         <div className="space-y-5">
           <div className="flex gap-4">
             <span className="text-2xl">📧</span>
             <div>
-              <p className="font-semibold text-gray-900 text-sm">Email</p>
+              <p className="font-semibold text-gray-900 text-sm">{c.emailLabel}</p>
               <a href="mailto:enquiry@hccs.sg" className="text-emerald-600 hover:underline text-sm">
                 enquiry@hccs.sg
               </a>
@@ -65,7 +84,7 @@ export default function ContactPage() {
           <div className="flex gap-4">
             <span className="text-2xl">📞</span>
             <div>
-              <p className="font-semibold text-gray-900 text-sm">Phone</p>
+              <p className="font-semibold text-gray-900 text-sm">{c.phoneLabel}</p>
               <a href="tel:+6594362866" className="text-emerald-600 hover:underline text-sm">
                 +65 9436-2866
               </a>
@@ -74,21 +93,21 @@ export default function ContactPage() {
           <div className="flex gap-4">
             <span className="text-2xl">💬</span>
             <div>
-              <p className="font-semibold text-gray-900 text-sm">WhatsApp</p>
+              <p className="font-semibold text-gray-900 text-sm">{c.whatsappLabel}</p>
               <a
-                href="https://wa.me/6565943628"
+                href="https://wa.me/6594362866"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-600 hover:underline text-sm"
               >
-                +65 6594-3628
+                +65 9436-2866
               </a>
             </div>
           </div>
           <div className="flex gap-4">
             <span className="text-2xl">📍</span>
             <div>
-              <p className="font-semibold text-gray-900 text-sm">Address</p>
+              <p className="font-semibold text-gray-900 text-sm">{c.addressLabel}</p>
               <p className="text-sm text-gray-600">
                 10 Anson Road #33-15<br />
                 International Plaza<br />
@@ -99,10 +118,8 @@ export default function ContactPage() {
         </div>
 
         <div className="mt-8 bg-gray-50 rounded-xl p-5">
-          <p className="text-sm font-semibold text-gray-700 mb-2">🌐 Bilingual Support Available</p>
-          <p className="text-sm text-gray-600">
-            We offer consultations in English and Mandarin (中文). Please indicate your preferred language in your message.
-          </p>
+          <p className="text-sm font-semibold text-gray-700 mb-2">{c.bilingualNote}</p>
+          <p className="text-sm text-gray-600">{c.bilingualDetail}</p>
         </div>
       </div>
 
@@ -111,21 +128,19 @@ export default function ContactPage() {
         {sent ? (
           <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-8 text-center">
             <div className="text-4xl mb-4">✅</div>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Message Sent!</h2>
-            <p className="text-sm text-gray-600">
-              Thank you for reaching out. We'll get back to you within 1–2 business days.
-            </p>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">{c.successTitle}</h2>
+            <p className="text-sm text-gray-600">{c.successMessage}</p>
           </div>
         ) : (
           <form
             onSubmit={handleSubmit}
             className="bg-white border border-gray-100 rounded-2xl shadow-sm p-8 space-y-5"
           >
-            <h2 className="text-xl font-bold text-gray-900">Send Us a Message</h2>
+            <h2 className="text-xl font-bold text-gray-900">{c.formTitle}</h2>
 
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{c.fullName}</label>
                 <input
                   type="text"
                   name="name"
@@ -133,25 +148,25 @@ export default function ContactPage() {
                   value={form.name}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  placeholder="Jane Smith"
+                  placeholder={c.namePlaceholder}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{c.companyName}</label>
                 <input
                   type="text"
                   name="company"
                   value={form.company}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  placeholder="Acme Pte Ltd"
+                  placeholder={c.companyPlaceholder}
                 />
               </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{c.email}</label>
                 <input
                   type="email"
                   name="email"
@@ -159,31 +174,31 @@ export default function ContactPage() {
                   value={form.email}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  placeholder="jane@company.com"
+                  placeholder={c.emailPlaceholder}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{c.phone}</label>
                 <input
                   type="tel"
                   name="phone"
                   value={form.phone}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                  placeholder="+65 9123 4567"
+                  placeholder={c.phonePlaceholder}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Industry</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{c.industry}</label>
               <select
                 name="industry"
                 value={form.industry}
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
               >
-                <option value="">Select an industry...</option>
+                <option value="">{c.industryDefault}</option>
                 {industries.map((ind) => (
                   <option key={ind} value={ind}>{ind}</option>
                 ))}
@@ -191,14 +206,14 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Service of Interest</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{c.service}</label>
               <select
                 name="service"
                 value={form.service}
                 onChange={handleChange}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
               >
-                <option value="">Select a service...</option>
+                <option value="">{c.serviceDefault}</option>
                 {servicesOfInterest.map((svc) => (
                   <option key={svc} value={svc}>{svc}</option>
                 ))}
@@ -206,7 +221,7 @@ export default function ContactPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Message *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{c.message}</label>
               <textarea
                 name="message"
                 required
@@ -214,9 +229,15 @@ export default function ContactPage() {
                 onChange={handleChange}
                 rows={5}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
-                placeholder="How can we help you?"
+                placeholder={c.messagePlaceholder}
               />
             </div>
+
+            {error && (
+              <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
+                {error}
+              </p>
+            )}
 
             <button
               type="submit"
@@ -227,7 +248,7 @@ export default function ContactPage() {
                 <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"/>
                 <path d="m21.854 2.147-10.94 10.939"/>
               </svg>
-              {loading ? "Sending..." : "Send Message"}
+              {loading ? c.submitting : c.submit}
             </button>
           </form>
         )}

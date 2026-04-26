@@ -6,22 +6,24 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
-
-const navLinks = [
-  { href: "/about", label: "About" },
-  { href: "/services", label: "Services" },
-  { href: "/media", label: "Media" },
-  { href: "/hr-news", label: "News" },
-  { href: "/resources", label: "Resources" },
-  { href: "/contact", label: "Contact" },
-  { href: "/membership", label: "Membership" },
-  { href: "/compliance-scan", label: "Compliance Scan" },
-];
+import { useLang } from "@/lib/i18n";
 
 export default function Navbar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [session, setSession] = useState<boolean | null>(null); // null = loading
+  const { lang, t, toggle } = useLang();
+
+  const navLinks = [
+    { href: "/about", label: t.nav.about },
+    { href: "/services", label: t.nav.services },
+    { href: "/media", label: t.nav.media },
+    { href: "/hr-news", label: t.nav.news },
+    { href: "/resources", label: t.nav.resources },
+    { href: "/contact", label: t.nav.contact },
+    { href: "/membership", label: t.nav.membership },
+    { href: "/compliance-scan", label: t.nav.complianceScan },
+  ];
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session: s } }) => {
@@ -60,24 +62,30 @@ export default function Navbar() {
         </ul>
 
         <div className="hidden lg:flex items-center gap-4">
-          <Link href="/" className="text-sm text-gray-700 hover:text-emerald-600 transition-colors">EN/中文</Link>
+          <button
+            onClick={toggle}
+            className="text-sm text-gray-700 hover:text-emerald-600 transition-colors font-medium"
+            aria-label="Toggle language"
+          >
+            {lang === "en" ? "中文" : "EN"}
+          </button>
           {session ? (
-            <Link href="/member-portal" className="text-sm text-gray-700 hover:text-emerald-600 transition-colors">HR Access</Link>
+            <Link href="/member-portal" className="text-sm text-gray-700 hover:text-emerald-600 transition-colors">{t.nav.hrAccess}</Link>
           ) : null}
           {session === null ? null : session ? (
             <>
               <button onClick={handleSignOut} className="text-sm text-gray-700 hover:text-emerald-600 transition-colors">
-                Sign Out
+                {t.nav.signOut}
               </button>
             </>
           ) : (
-            <Link href="/login" className="text-sm text-gray-700 hover:text-emerald-600 transition-colors">Sign In</Link>
+            <Link href="/login" className="text-sm text-gray-700 hover:text-emerald-600 transition-colors">{t.nav.signIn}</Link>
           )}
           <Link
             href="/consultation"
             className="text-sm bg-emerald-600 text-white px-4 py-1.5 rounded hover:bg-emerald-700 transition-colors"
           >
-            Book
+            {t.nav.book}
           </Link>
         </div>
 
@@ -108,16 +116,20 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
-            <li><Link href="/" onClick={() => setOpen(false)} className="block py-1 hover:text-emerald-600">EN/中文</Link></li>
+            <li>
+              <button onClick={() => { toggle(); setOpen(false); }} className="block py-1 hover:text-emerald-600 text-left w-full">
+                {lang === "en" ? "中文" : "EN"}
+              </button>
+            </li>
             {session ? (
-              <li><Link href="/member-portal" onClick={() => setOpen(false)} className="block py-1 hover:text-emerald-600">HR Access</Link></li>
+              <li><Link href="/member-portal" onClick={() => setOpen(false)} className="block py-1 hover:text-emerald-600">{t.nav.hrAccess}</Link></li>
             ) : null}
             {session ? (
               <>
-                <li><button onClick={handleSignOut} className="block py-1 text-left w-full hover:text-emerald-600">Sign Out</button></li>
+                <li><button onClick={handleSignOut} className="block py-1 text-left w-full hover:text-emerald-600">{t.nav.signOut}</button></li>
               </>
             ) : (
-              <li><Link href="/login" onClick={() => setOpen(false)} className="block py-1 hover:text-emerald-600">Sign In</Link></li>
+              <li><Link href="/login" onClick={() => setOpen(false)} className="block py-1 hover:text-emerald-600">{t.nav.signIn}</Link></li>
             )}
             <li>
               <Link
@@ -125,7 +137,7 @@ export default function Navbar() {
                 onClick={() => setOpen(false)}
                 className="block mt-2 text-center bg-emerald-600 text-white px-4 py-2 rounded hover:bg-emerald-700"
               >
-                Book
+                {t.nav.book}
               </Link>
             </li>
           </ul>

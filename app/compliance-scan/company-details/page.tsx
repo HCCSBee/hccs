@@ -3,6 +3,7 @@
 export const dynamic = "force-dynamic";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useLang } from "@/lib/i18n";
 
 const industries = [
   "Retail","F&B","Construction","Manufacturing","Trading","Services","Recruitment",
@@ -25,6 +26,9 @@ const companySizes = [
 
 export default function CompanyDetailsPage() {
   const router = useRouter();
+  const { t } = useLang();
+  const cd = t.complianceScan.companyDetails;
+  const steps = t.complianceScan.steps;
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -54,7 +58,7 @@ export default function CompanyDetailsPage() {
       <div className="w-full max-w-lg">
         {/* Step indicator */}
         <div className="flex items-center gap-2 mb-8">
-          {["Company Details", "Introduction", "Questions", "Results"].map((step, i) => (
+          {steps.map((step, i) => (
             <div key={step} className="flex items-center gap-2">
               <div className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold ${i === 0 ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-400"}`}>
                 {i + 1}
@@ -65,13 +69,13 @@ export default function CompanyDetailsPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-          <h1 className="text-2xl font-bold text-slate-900 mb-1">Your Details</h1>
-          <p className="text-sm text-slate-500 mb-7">We&apos;ll use this to personalise your compliance report.</p>
+          <h1 className="text-2xl font-bold text-slate-900 mb-1">{cd.heading}</h1>
+          <p className="text-sm text-slate-500 mb-7">{cd.subheading}</p>
 
           <form onSubmit={handleNext} className="space-y-5">
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Full Name *</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">{cd.fullName} *</label>
                 <input
                   name="name"
                   required
@@ -82,7 +86,7 @@ export default function CompanyDetailsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Business Email *</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">{cd.businessEmail} *</label>
                 <input
                   name="email"
                   type="email"
@@ -97,7 +101,7 @@ export default function CompanyDetailsPage() {
 
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Company Name *</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">{cd.companyName} *</label>
                 <input
                   name="company"
                   required
@@ -108,7 +112,7 @@ export default function CompanyDetailsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Mobile Number</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">{cd.mobileNumber}</label>
                 <input
                   name="phone"
                   type="tel"
@@ -121,7 +125,7 @@ export default function CompanyDetailsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Industry *</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">{cd.industryLabel} *</label>
               <select
                 name="industry"
                 required
@@ -129,7 +133,7 @@ export default function CompanyDetailsPage() {
                 onChange={handleChange}
                 className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
               >
-                <option value="">Select an industry...</option>
+                <option value="">{cd.selectIndustry}</option>
                 {industries.map((ind) => (
                   <option key={ind} value={ind}>{ind}</option>
                 ))}
@@ -137,7 +141,7 @@ export default function CompanyDetailsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Company Size *</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">{cd.sizeLabel} *</label>
               <select
                 name="size"
                 required
@@ -145,7 +149,7 @@ export default function CompanyDetailsPage() {
                 onChange={handleChange}
                 className="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white"
               >
-                <option value="">Select company size...</option>
+                <option value="">{cd.selectSize}</option>
                 {companySizes.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
@@ -153,22 +157,25 @@ export default function CompanyDetailsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Do you employ foreign workers? *</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">{cd.foreignWorkersLabel} *</label>
               <div className="flex gap-3">
-                {(["Yes", "No"] as const).map((opt) => (
-                  <button
-                    key={opt}
-                    type="button"
-                    onClick={() => setForm({ ...form, foreignWorkers: opt === "Yes" })}
-                    className={`flex-1 py-2.5 rounded-lg border-2 font-medium text-sm transition-all ${
-                      form.foreignWorkers === (opt === "Yes") && form.foreignWorkers !== null
-                        ? "bg-emerald-600 text-white border-emerald-600"
-                        : "bg-white text-slate-600 border-slate-300 hover:border-emerald-400"
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
+                {([cd.yes, cd.no] as const).map((opt) => {
+                  const isYes = opt === cd.yes;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => setForm({ ...form, foreignWorkers: isYes })}
+                      className={`flex-1 py-2.5 rounded-lg border-2 font-medium text-sm transition-all ${
+                        form.foreignWorkers === isYes && form.foreignWorkers !== null
+                          ? "bg-emerald-600 text-white border-emerald-600"
+                          : "bg-white text-slate-600 border-slate-300 hover:border-emerald-400"
+                      }`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -177,7 +184,7 @@ export default function CompanyDetailsPage() {
               disabled={!allFilled}
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Continue →
+              {cd.continue}
             </button>
           </form>
         </div>

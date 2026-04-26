@@ -1,0 +1,557 @@
+{
+  "nav": {
+    "about": "关于我们",
+    "services": "服务",
+    "media": "媒体",
+    "news": "新闻",
+    "resources": "资源",
+    "contact": "联系我们",
+    "membership": "会员",
+    "complianceScan": "合规检查",
+    "hrAccess": "人力资源通道",
+    "signIn": "登录",
+    "signOut": "退出",
+    "book": "预约咨询"
+  },
+  "footer": {
+    "tagline": "人力资本咨询与服务（新加坡）私人有限公司\n人力部注册，持牌职业介绍所\n25年以上经验",
+    "services": "服务",
+    "epPr": "EP / PR 申请",
+    "hrCompliance": "人力资源合规",
+    "workforcePlanning": "人力规划",
+    "fractionalHr": "兼职人力资源",
+    "aiHr": "AI人力资源解决方案",
+    "freeScan": "免费合规扫描",
+    "company": "公司",
+    "aboutUs": "关于我们",
+    "hrNews": "人力资源新闻",
+    "employmentLaws": "劳工法",
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "contact": "联系我们",
+    "whatsapp": "WhatsApp联系",
+    "bookConsultation": "预约免费咨询",
+    "bilingualNote": "双语支持：EN / 中文"
+  },
+  "contact": {
+    "title": "联系我们",
+    "subtitle": "我们很乐意听取您的意见。欢迎与我们联系，开始对话。我们通常在1–2个工作日内回复。",
+    "emailLabel": "电子邮件",
+    "phoneLabel": "电话",
+    "whatsappLabel": "WhatsApp",
+    "whatsappUs": "WhatsApp联系我们",
+    "addressLabel": "地址",
+    "bilingualNote": "🌐 提供双语支持",
+    "bilingualDetail": "我们提供英语和普通话（中文）的咨询服务。请在留言中注明您的语言偏好。",
+    "formTitle": "发送消息",
+    "fullName": "全名 *",
+    "namePlaceholder": "您的全名",
+    "companyName": "公司名称",
+    "companyPlaceholder": "公司名称",
+    "email": "电子邮件 *",
+    "emailPlaceholder": "jane@company.com",
+    "phone": "电话",
+    "phonePlaceholder": "+65 9123 4567",
+    "industry": "行业",
+    "industryDefault": "选择行业...",
+    "service": "感兴趣的服务",
+    "serviceDefault": "选择服务...",
+    "message": "留言 *",
+    "messagePlaceholder": "请告诉我们您需要什么帮助？",
+    "submit": "发送消息",
+    "submitting": "发送中...",
+    "successTitle": "消息已发送！",
+    "successMessage": "感谢您的联系。我们将在1–2个工作日内回复您。",
+    "errorFallback": "发送失败，请重试。"
+  },
+  "common": {
+    "bookFreeConsultation": "预约免费咨询",
+    "freeScan": "免费合规扫描",
+    "learnMore": "了解更多",
+    "returnHome": "返回首页",
+    "startScan": "开始免费扫描",
+    "visitLink": "访问 ↗",
+    "subscribeNewsletter": "订阅电子报",
+    "allServices": "← 所有服务",
+    "source": "来源",
+    "locked": "已锁定",
+    "mostPopular": "最受欢迎",
+    "upgradeRequired": "升级以解锁",
+    "video": "视频"
+  },
+  "home": {
+    "heroBadge": "人力部注册 · 持牌职业介绍所 · 25年以上经验",
+    "heroTitle": "新加坡雇主专业人力资源合规咨询服务",
+    "heroDesc": "我们为企业提供端到端支持，从公司注册到行业专项指导，确保全面遵守新加坡法律法规。我们还负责管理人力资源职能，借助AI驱动的解决方案，包括AI人才招聘及人力资源服务平台，实现顺畅运营。",
+    "heroBook": "预约免费咨询",
+    "heroScan": "免费合规扫描",
+    "heroStatClients": "客户信赖",
+    "heroStatRate": "成功率",
+    "heroStatExperience": "市场经验",
+    "heroFloatingBadge": "专业顾问",
+    "heroFloatingDesc": "覆盖合规、人力资源及劳动力服务的人工顾问团队",
+    "statsClients": "客户信赖",
+    "statsProjects": "项目管理",
+    "statsYears": "年行业经验",
+    "statsPartners": "合作伙伴",
+    "statsRate": "成功率",
+    "clarifyBadge": "重要说明",
+    "clarifyTitle": "HCCS是咨询公司，而非独立AI人力资源服务",
+    "clarifyDesc": "与HCCS合作，您将与一家专业的人力资源合规咨询公司共事，我们提供新加坡全方位人力资源咨询服务，涵盖工作准证与居留权策略、合规管理、人力规划及企业注册支持。",
+    "servicesBadge": "我们的服务",
+    "servicesTitle": "专为规模化设计的战略性人力资源解决方案",
+    "servicesDesc": "HCCS提供新加坡全方位人力资源咨询服务。AIHR是专业咨询服务体系中支持的平台之一。",
+    "servicesLearnMore": "了解更多",
+    "exploreEmployer": "探索雇主服务",
+    "galleryBadge": "HCCS实际提供的服务",
+    "galleryTitle": "由真实顾问支撑的专业服务",
+    "galleryDesc": "公司为雇主提供企业注册、招聘、合规、员工关系及人力规划方面的支持，而不仅仅是AI工具或自动化回复。",
+    "advantageBadge": "战略价值",
+    "advantageTitle": "HCCS的优势",
+    "advantageDesc": "我们将人力资源合规及顾问工作转化为可扩展的实用体系，降低运营风险，增强长期业务表现。",
+    "insightsTitle": "60秒洞见",
+    "insightsDesc": "关注Florence及其团队，获取人力资源合规、AI应用及新加坡劳动力趋势的快速解读。",
+    "insightsFollow": "关注 @askbeebeesghr",
+    "insightsVideoLabel": "视频",
+    "testimonialsTitle": "客户心声",
+    "membershipBadge": "可选数字支持",
+    "membershipTitle": "AI会员平台，持续提供人力资源支持",
+    "membershipDesc": "对于希望获得更快响应及自助资源的客户，HCCS还提供AI会员平台，作为核心咨询服务的补充。",
+    "membershipViewPlans": "查看套餐",
+    "membershipTryFree": "免费体验",
+    "ctaBadge": "30分钟免费咨询",
+    "ctaTitle": "准备好建立更强大、更合规的企业了吗？",
+    "ctaDesc": "预约与我们人力部注册的人力资源及劳动力顾问团队的免费咨询。无任何义务，只提供实用建议。",
+    "ctaBook": "预约免费咨询",
+    "ctaScan": "免费合规扫描",
+    "services": [
+      { "title": "EP/PR新申请及续签", "description": "为月薪5600新元以上的专业人士提供战略指导、资格评估及全面申请支持。" },
+      { "title": "永久居留权", "description": "通过专业处理PTS计划申请，助您在新加坡稳固长期发展基础。" },
+      { "title": "创业准证及企业注册", "description": "为希望在新加坡创业的外籍企业家提供完整的公司注册及签证策略支持。" },
+      { "title": "人力资源合规及咨询", "description": "确保您的公司符合所有人力部法规要求，避免处罚，提高审批成功率。" },
+      { "title": "AI人力资源", "description": "由专家顾问支持的AI驱动人力资源指导与合规监测。" },
+      { "title": "新加坡市场进入及企业注册", "description": "协助外籍创业者在新加坡合规建立及运营企业。" },
+      { "title": "兼职人力资源业务伙伴", "description": "以兼职或项目形式获取高级人力资源领导力，推动战略举措落地。" },
+      { "title": "人力规划与组织设计", "description": "将人力能力与增长计划、自动化及AI就绪程度相协调。" },
+      { "title": "学习与发展", "description": "战略性技能提升及以AI为重点的培训，为劳动力未来做好准备。" },
+      { "title": "绩效与企业文化", "description": "通过OKR、KPI及领导力发展，打造高绩效团队。" }
+    ],
+    "consultancyPillars": [
+      { "title": "新加坡市场进入及企业注册", "description": "协助外籍创业者在新加坡合规建立及运营企业。" },
+      { "title": "工作准证及居留权策略", "description": "战略性EP、创业准证及PR解决方案，提升审批成功率。" },
+      { "title": "人力资源合规及风险咨询", "description": "通过符合新加坡法规的结构化人力资源框架，保护您的企业。" },
+      { "title": "AIHR合规智能平台", "description": "由专家顾问支持的AI驱动人力资源指导与合规监测，而非独立AI服务。" }
+    ],
+    "consultancyGallery": [
+      { "title": "顾问主导的指导", "caption": "由经验丰富的专业人士提供清晰的人力资源合规建议，而非纯聊天机器人流程。" },
+      { "title": "一站式多项服务", "caption": "从合规审查、移民支持到兼职人力资源及人力规划，HCCS覆盖全面运营图景。" }
+    ],
+    "advantagePoints": [
+      "人力部注册的人力资源咨询公司，具备丰富的新加坡市场实战经验。",
+      "从企业注册和移民到合规及日常人力资源运营的端到端支持。",
+      "AI驱动的人力资源服务和会员方案，实现更快响应和更强执行力。",
+      "双语支持和咨询，平衡商业速度与法律法规要求。"
+    ]
+  },
+  "services": {
+    "badge": "HCCS服务",
+    "title": "我们的服务",
+    "desc": "HCCS按照世界经济论坛2025年人力资源趋势提供以下服务。",
+    "highlights": [
+      { "title": "新加坡市场进入及企业注册", "desc": "协助外籍创业者在新加坡合规建立及运营企业。" },
+      { "title": "工作准证及居留权策略", "desc": "战略性EP、创业准证及PR解决方案，提升审批成功率。" },
+      { "title": "人力资源合规及风险咨询", "desc": "通过符合新加坡法规的结构化人力资源框架，保护您的企业。" },
+      { "title": "AIHR合规智能平台", "desc": "由专家顾问支持的AI驱动人力资源指导与合规监测。" }
+    ],
+    "loading": "正在加载服务...",
+    "ctaTitle": "不确定需要哪项服务？",
+    "ctaDesc": "预约我们人力资源顾问团队的30分钟免费咨询，我们将评估您的需求并推荐适合您业务的服务。",
+    "ctaButton": "预约免费咨询"
+  },
+  "serviceDetail": {
+    "allServices": "← 所有服务",
+    "badge": "HCCS服务",
+    "overview": "服务概述",
+    "whatsIncluded": "服务内容",
+    "whoHelps": "适用对象",
+    "readyTitle": "准备好开始了吗？",
+    "readyDesc": "预约免费咨询，让我们的团队为您的业务提供正确的方向指导。",
+    "ctaButton": "预约免费咨询"
+  },
+  "employer": {
+    "badge": "HCCS服务",
+    "title": "我们的服务",
+    "desc": "HCCS按照世界经济论坛2025年人力资源趋势提供以下服务。",
+    "highlights": [
+      { "title": "新加坡市场进入及企业注册", "desc": "协助外籍创业者在新加坡合规建立及运营企业。" },
+      { "title": "工作准证及居留权策略", "desc": "战略性EP、创业准证及PR解决方案，提升审批成功率。" },
+      { "title": "人力资源合规及风险咨询", "desc": "通过符合新加坡法规的结构化人力资源框架，保护您的企业。" },
+      { "title": "AIHR合规智能平台", "desc": "由专家顾问支持的AI驱动人力资源指导与合规监测。" }
+    ],
+    "services": [
+      { "icon": "EP", "title": "EP/PR新申请及续签", "desc": "为月薪5600新元以上的专业人士提供战略指导。资格评估及全面申请支持。" },
+      { "icon": "PR", "title": "永久居留权", "desc": "在新加坡稳固长期发展基础。专业处理准证持有人的PTS计划申请。" },
+      { "icon": "EN", "title": "创业准证及企业注册", "desc": "为希望在新加坡创业的外籍企业家提供服务。完整的公司注册和签证策略。" },
+      { "icon": "HR", "title": "人力资源合规及咨询", "desc": "确保公司符合所有人力部法规要求，避免处罚，提高审批成功率。" },
+      { "icon": "AI", "title": "AI人力资源", "desc": "为中小企业提供经济高效的技术驱动人力资源支持，将人力资源转变为战略增长引擎。" },
+      { "icon": "SG", "title": "新加坡市场进入及企业注册", "desc": "协助外籍创业者在新加坡合规建立及运营企业。" },
+      { "icon": "FB", "title": "兼职人力资源业务伙伴", "desc": "以兼职或项目形式获取高级人力资源领导力，推动战略举措落地。" },
+      { "icon": "WP", "title": "人力规划与组织设计", "desc": "将人力能力与增长计划、自动化及AI就绪程度相协调。" },
+      { "icon": "LD", "title": "学习与发展", "desc": "战略性技能提升及以AI为重点的培训，为劳动力未来做好准备。" },
+      { "icon": "PC", "title": "绩效与企业文化", "desc": "通过OKR、KPI及领导力发展，打造高绩效团队。" }
+    ],
+    "ctaTitle": "不确定需要哪项服务？",
+    "ctaDesc": "预约我们人力资源顾问团队的30分钟免费咨询，我们将评估您的需求并推荐适合您业务的服务。",
+    "ctaButton": "预约免费咨询"
+  },
+  "consultation": {
+    "title": "预约免费咨询",
+    "subtitle": "填写以下表格，我们的团队将在1个工作日内联系您确认预约。",
+    "fullName": "全名 *",
+    "namePlaceholder": "您的全名",
+    "companyName": "公司名称",
+    "companyPlaceholder": "公司私人有限公司",
+    "email": "电子邮件 *",
+    "emailPlaceholder": "you@company.com",
+    "phone": "电话",
+    "phonePlaceholder": "+65 9123 4567",
+    "industry": "行业",
+    "industryDefault": "选择行业",
+    "service": "感兴趣的服务",
+    "serviceDefault": "选择服务",
+    "message": "其他需要我们了解的事项？",
+    "messagePlaceholder": "可选备注或具体问题...",
+    "submit": "预约免费咨询",
+    "submitting": "提交中...",
+    "successTitle": "咨询申请已收到！",
+    "successMessage": "感谢您！我们将在1个工作日内确认您的预约。",
+    "errorFallback": "提交失败，请重试。"
+  },
+  "consultationSuccess": {
+    "title": "咨询预约成功！",
+    "desc": "感谢您预约与HCCS的30分钟免费咨询。我们将在1个工作日内通过电子邮件确认您的预约。",
+    "emailNote": "📧 确认邮件将发送至您的电子邮件地址。",
+    "phoneNote": "📞 您也可以通过以下方式联系我们",
+    "whatsappNote": "💬 或通过WhatsApp联系我们",
+    "returnHome": "返回首页"
+  },
+  "complianceScan": {
+    "badge": "免费 · 一次性扫描",
+    "title": "人力资源合规风险扫描",
+    "desc": "了解您的公司是否面临人力部监管风险。回答10个简单问题，即刻获取合规分数、风险评级及建议纠正措施——完全免费。",
+    "startScan": "开始免费扫描",
+    "takesNote": "约需3分钟 · 无需注册",
+    "whatYouReceive": "您将获得",
+    "receiveItems": [
+      { "icon": "📊", "title": "合规分数", "desc": "10个关键人力资源合规领域的即时百分比评分。" },
+      { "icon": "⚠️", "title": "风险等级评定", "desc": "分为低、中、高或严重风险，附通俗易懂的说明。" },
+      { "icon": "📋", "title": "行动清单", "desc": "针对您答题中发现的差距量身定制的具体纠正步骤。" }
+    ],
+    "areasTitle": "涵盖10个领域",
+    "areas": [
+      "劳动合同", "工资单", "公积金", "外籍员工", "公平招聘",
+      "假期权益", "工伤赔偿", "反歧视", "裁员", "人力资源档案"
+    ],
+    "ctaTitle": "准备好检查您的合规状态了吗？",
+    "ctaDesc": "免费、即时、无需注册。",
+    "ctaButton": "开始免费扫描 →",
+    "steps": ["公司资料", "介绍", "问题", "结果"],
+    "companyDetails": {
+      "heading": "您的详情",
+      "subheading": "我们将使用这些信息为您个性化合规报告。",
+      "fullName": "全名",
+      "businessEmail": "公司电邮",
+      "companyName": "公司名称",
+      "mobileNumber": "手机号码",
+      "industryLabel": "行业",
+      "sizeLabel": "公司规模",
+      "foreignWorkersLabel": "您是否雇用外籍员工？",
+      "yes": "是",
+      "no": "否",
+      "selectIndustry": "请选择行业...",
+      "selectSize": "请选择公司规模...",
+      "continue": "继续 →"
+    },
+    "intro": {
+      "helloPrefix": "您好，",
+      "aboutPrefix": "您即将评估 ",
+      "aboutSuffix": " 对新加坡主要人力资源合规要求的符合程度。",
+      "timingTitle": "约需3分钟",
+      "timingDesc": "涵盖人力部主要合规领域的10个问题",
+      "honestTitle": "请如实作答",
+      "honestDesc": "您的评分准确性取决于您的回答诚实度。如有疑问，请选择'不确定'。",
+      "resultsTitle": "即时获取结果",
+      "resultsDesc": "您的合规分数、风险等级及建议行动将立即显示。",
+      "back": "← 返回",
+      "start": "开始答题 →"
+    },
+    "questionsPage": {
+      "heading": "人力资源合规问题",
+      "answeredLabel": "已作答",
+      "back": "← 返回",
+      "submitReady": "获取我的合规分数 →",
+      "submitWaiting": "请回答所有问题以继续",
+      "analysing": "正在分析您的回答",
+      "analysingDesc": "AIHR正在根据新加坡主要人力资源合规风险指标分析您的回答。",
+      "resultsHeading": "您的合规结果",
+      "totalScore": "总分",
+      "outOf": "满分",
+      "points": "分",
+      "riskLevelLabel": "风险等级",
+      "primaryRiskLabel": "主要风险：",
+      "breakdownTitle": "各类别风险分析",
+      "nextStepsTitle": "下一步",
+      "disclaimer": "本评估基于您的回答提供参考指引，不构成法律建议。",
+      "bookReview": "预约专家评审",
+      "downloadPDF": "下载报告（PDF）",
+      "mixedRisk": "综合合规风险",
+      "generalCompliance": "一般合规",
+      "momAlert": "人力部风险提示：合同、工资单、记录或终止程序可能存在漏洞。",
+      "cpfAlert": "公积金风险提示：公积金流程可能缺乏核查或控制。",
+      "tafepAlert": "TAFEP风险提示：招聘做法可能与公平就业原则不符。",
+      "riskLevels": {
+        "LOW": {
+          "label": "低风险",
+          "subtitle": "您的公司拥有扎实的人力资源合规基础",
+          "description": "您的回答表明整体人力资源合规架构较为健全。请继续定期审查，以跟上法规的演变。",
+          "recommendations": ["维持现有合规流程", "安排季度人力资源合规审计", "定期监测人力部更新", "记录所有人力资源政策"]
+        },
+        "MEDIUM": {
+          "label": "中等风险",
+          "subtitle": "多个合规领域需要关注",
+          "description": "虽未发现即时严重问题，但解决已发现的漏洞将降低监管和运营风险。",
+          "recommendations": ["审查并更新劳动合同", "强化人力资源文档系统", "开展公平招聘实践审计", "安排与专家进行合规审查"]
+        },
+        "HIGH": {
+          "label": "高风险",
+          "subtitle": "关键合规漏洞需要立即处理",
+          "description": "您的公司存在需要紧急审查的关键人力资源合规问题。立即采取行动将显著降低监管风险。",
+          "recommendations": ["预约紧急合规审查", "制定纠正行动计划", "审计所有就业文件", "审查外籍员工管理"]
+        }
+      },
+      "questions": [
+        { "question": "您目前是否雇用外籍员工，如就业准证、S准证或工作准证持有者？", "options": ["是，较多", "是，少数", "否"] },
+        { "question": "公积金缴款的计算和提交是否有适当的内部核查程序？", "options": ["是，有明确的内部核查", "有，但核查较随意", "不确定或完全外包且无核查"] },
+        { "question": "所有员工是否都有符合人力部关键就业条款的最新劳动合同？", "options": ["是，在过去12个月内审查过", "有，但未近期审查", "没有或不确定"] },
+        { "question": "您是否按照人力部要求发放逐项列明的工资单？", "options": ["是", "部分符合", "否"] },
+        { "question": "您的外籍员工的职位、薪资和职责是否符合人力部的期望？", "options": ["是", "不完全确定", "否"] },
+        { "question": "您是否维护适当的人力资源记录，如假期、考勤、合同和警告信？", "options": ["是，有系统化管理", "部分维护", "否"] },
+        { "question": "您是否有明确的员工终止合同和纠纷处理流程？", "options": ["是", "仅有非正式流程", "否"] },
+        { "question": "您的公司是否遵循公平招聘做法，避免可能带有歧视性的招聘用语？", "options": ["是", "不完全确定", "否"] },
+        { "question": "您是否积极关注人力部、公积金局和TAFEP的最新动态？", "options": ["是，定期关注", "偶尔关注", "否"] },
+        { "question": "您是否有专业的人力资源专家（内部或外部）支持合规事务？", "options": ["是", "仅有部分支持", "否"] }
+      ]
+    }
+  },
+  "membership": {
+    "title": "AIHR会员套餐",
+    "desc": "获取AI驱动的人力资源工具、优质模板、合规扫描及独家咨询折扣——专为新加坡企业设计。",
+    "mostPopular": "最受欢迎",
+    "faqTitle": "常见问题",
+    "plans": [
+      { "name": "免费版", "price": "S$0", "period": "永久免费", "target": "探索人力资源基础知识的个人", "features": ["AI人力资源聊天机器人（基础查询）", "3个可下载的人力资源模板", "1次合规扫描（一次性）", "访问人力资源新闻资讯", "社区论坛访问权限"], "cta": "免费开始", "href": "/member-portal" },
+      { "name": "基础版", "price": "S$5,988", "period": "/ 年（第一年优惠）", "target": "需要合规支持的中小企业", "features": ["AI人力资源聊天机器人（增强版）", "完整人力资源模板和SOP库", "无限次合规扫描", "视频洞见库", "咨询服务九折优惠", "优先预约咨询", "政府培训补贴申请"], "cta": "获取基础版", "href": "/checkout?plan=essential" },
+      { "name": "专业版", "price": "S$11,988", "period": "年付", "target": "成长型企业", "features": ["基础版全部权益", "高级AI人力资源聊天机器人", "多用户团队访问（最多5人）", "咨询服务七折优惠", "每月人力资源法规简报", "专属入职辅导", "优先支持"], "cta": "联系询价", "href": "/contact" },
+      { "name": "战略版", "price": "S$17,988", "period": "年付", "target": "企业人力资源团队", "features": ["专业版全部权益", "无限团队用户", "定制AI人力资源聊天机器人训练", "专属HCCS客户经理", "季度人力资源战略评审", "独家网络研讨会及工作坊", "定制合规报告"], "cta": "联系询价", "href": "/contact" }
+    ],
+    "faqs": [
+      { "q": "可以先试用再订阅吗？", "a": "是的——免费版提供基础AI人力资源聊天机器人查询、3个模板和一次合规扫描，无需信用卡。" },
+      { "q": "有月付选项吗？", "a": "目前所有付费套餐均为年付。这有助于我们提供最佳价值并为会员提供持续服务。" },
+      { "q": "可以随时升级套餐吗？", "a": "是的，您可以随时升级。当前套餐的未使用价值将按比例折抵新套餐费用。" },
+      { "q": "为何基础版第一年更便宜？", "a": "我们目前正在为早期会员提供3个月的上线优惠折扣，该优惠价格适用于您的第一年。" },
+      { "q": "支付安全吗？", "a": "是的。所有付款均通过Airwallex安全处理。HCCS不会存储您的银行卡信息。" }
+    ]
+  },
+  "resources": {
+    "title": "资源",
+    "desc": "为新加坡雇主和人力资源团队提供的实用外部资源。",
+    "govLinksTitle": "政府及机构链接",
+    "hccsLinksTitle": "HCCS内部链接",
+    "visitLink": "访问 ↗",
+    "ctaTitle": "需要个性化的人力资源合规建议？",
+    "ctaDesc": "我们的人力部注册人力资源顾问团队可为您提供适用于您业务的法规指导。",
+    "ctaButton": "预约免费咨询",
+    "governmentLinks": [
+      { "label": "公积金局", "description": "公积金规则、雇主义务及缴款指南。" },
+      { "label": "人力部", "description": "新加坡雇佣实践、工作准证规则及核心劳工法规。" },
+      { "label": "税务局", "description": "企业税、薪资税申报及税务合规信息。" },
+      { "label": "会计与企业管理局", "description": "企业注册、申报要求及公司治理事务。" },
+      { "label": "移民与关卡局", "description": "新加坡移民政策及入境要求。" },
+      { "label": "新加坡全国雇主联合会", "description": "以雇主为中心的更新、咨询资料及劳资关系支持。" },
+      { "label": "公平与进步就业联盟", "description": "公平招聘实践、职场指南及反歧视咨询。" },
+      { "label": "全国职工总会", "description": "职场支持生态系统及劳工运动资源。" }
+    ],
+    "hccsLinks": [
+      { "label": "关于HCCS" },
+      { "label": "人力资源新闻与更新" },
+      { "label": "媒体" },
+      { "label": "联系我们" },
+      { "label": "会员" }
+    ]
+  },
+  "hrNews": {
+    "title": "人力资源资讯",
+    "desc": "随时了解新加坡人力部、公积金局、TAFEP、税务局及会计与企业管理局的法规更新——专为企业主和人力资源专业人士精心整理。",
+    "allIndustries": "所有行业",
+    "alertTitle": "📢 行业法规预警",
+    "alertDesc": "获取与您所在行业相关的人力部、公积金局、税务局、TAFEP、会计与企业管理局及移民与关卡局法规变更实时预警。请在上方选择您的行业以筛选相关资讯。",
+    "subscribeNote": "订阅我们的电子报，每周获取人力资源法规更新。",
+    "subscribeButton": "订阅电子报",
+    "source": "来源：",
+    "industries": [
+      "所有行业", "科技", "金融与银行", "制造业",
+      "餐饮与酒店", "医疗", "建筑", "零售", "专业服务"
+    ],
+    "newsItems": [
+      { "date": "2026年4月", "tag": "MOM", "title": "弹性工作安排指导方针正式生效", "desc": "三方弹性工作安排指导方针已具法律效力。雇主必须以书面形式公平考虑所有弹性工作安排申请。", "source": "海峡时报" },
+      { "date": "2026年3月", "tag": "立法", "title": "职场公平立法——雇主须知的重大变化", "desc": "新加坡《职场公平法》加强了对职场歧视的保护。雇主须在生效日期前更新相关政策。", "source": "商业时报" },
+      { "date": "2026年3月", "tag": "CPF", "title": "2026年公积金月薪顶限上调及其他变化", "desc": "公积金月薪顶限提高至8000新元。雇主须更新薪资系统以反映新的缴款率。", "source": "人力部" },
+      { "date": "2026年2月", "tag": "MOM", "title": "人力部发布退休及重新雇用新指导方针", "desc": "更新的指导方针明确了雇主在《退休和重新雇用法》下的义务，包括重新雇用提议和再培训支持。", "source": "人力部" },
+      { "date": "2026年2月", "tag": "薪资", "title": "2026年薪资展望：各行业预期增幅", "desc": "人力部和行业调查预测大多数行业平均薪资增幅为4%至6%，科技和医疗行业领先，增幅达7%至9%。", "source": "商业时报" },
+      { "date": "2026年1月", "tag": "Tech Pass", "title": "2026年Tech Pass申请资格标准更新", "desc": "人力部修订了Tech Pass资格标准，将产品经理和AI专家纳入其中。申请窗口每季度开放一次。", "source": "人力部" },
+      { "date": "2026年1月", "tag": "TAFEP", "title": "公平招聘框架——合规审计季开始", "desc": "TAFEP宣布对员工超过25人的企业进行定向合规审计。必须记录对本地员工的公平考虑。", "source": "TAFEP" },
+      { "date": "2025年12月", "tag": "裁员", "title": "人力部裁员通知——门槛降低", "desc": "裁员5名或以上员工的企业须在5个工作日内通知人力部。更新的表格和申报程序已上线。", "source": "今日报" }
+    ]
+  },
+  "media": {
+    "badge": "@askbeebeesghr",
+    "title": "媒体",
+    "desc": "由关心您的专家为创业者精心策划的洞见内容。",
+    "followTikTok": "关注 @askbeebeesghr",
+    "facebook": "Facebook",
+    "linkedin": "领英",
+    "videos": [
+      { "title": "专家洞见", "subtitle": "为新加坡企业领袖精选的内容。" },
+      { "title": "人力资源合规指南", "subtitle": "关于新加坡人力资源您需要了解的一切。" },
+      { "title": "商业策略技巧", "subtitle": "助力企业增长的战略建议。" },
+      { "title": "劳动力管理", "subtitle": "团队管理最佳实践。" },
+      { "title": "合规更新", "subtitle": "最新新加坡劳动法规。" },
+      { "title": "增长策略", "subtitle": "自信地扩大您的业务。" }
+    ]
+  },
+  "employmentLaws": {
+    "title": "新加坡劳动法律",
+    "desc": "每位新加坡雇主必知的关键法律——从《雇佣法》到《职场公平法》。",
+    "keyPoints": "要点",
+    "readMore": "在人力部网站了解更多",
+    "ctaTitle": "需要帮助确保您的企业合规？",
+    "ctaDesc": "我们的人力部注册人力资源顾问可审查您的实践并为您提供每项法规的指导。",
+    "ctaButton": "预约免费合规咨询",
+    "laws": [
+      { "icon": "📋", "name": "雇佣法", "short": "EA", "desc": "涵盖新加坡雇员劳动合同、工时、加班、休假权益及解雇的核心立法。", "keyPoints": ["涵盖公务员、家庭佣工和船员以外的所有雇员", "要求向所有适用雇员提供详细工资单", "规定最低年假、病假、产假/陪产假权益", "规范休息日、加班费率及工资支付时间表", "要求从第一天起签订书面劳动合同"], "link": "https://www.mom.gov.sg/employment-practices/employment-act" },
+      { "icon": "🌏", "name": "雇用外国人力法", "short": "EFMA", "desc": "规范新加坡外籍工人和专业人员的雇用，涵盖工作准证、雇主义务及处罚。", "keyPoints": ["管辖就业准证、S准证、工作准证、科技准证及创业准证", "规定公平考量框架（FCF）职位广告要求", "规定雇主为准证持有人提供医疗保险的义务", "非法雇用处罚包括罚款和列入黑名单", "雇主须为所有外籍员工维持有效工作准证"], "link": "https://www.mom.gov.sg/passes-and-permits" },
+      { "icon": "🏥", "name": "工伤赔偿法", "short": "WICA", "desc": "保护工作中受伤或患职业病的雇员，提供无需证明雇主过失的赔偿。", "keyPoints": ["涵盖家庭佣工和自雇人士以外的所有雇员", "体力劳动者和低薪工人须强制购买工伤赔偿保险", "雇主须在10天内向人力部报告工伤事故", "赔偿项目包括医疗费用、暂时丧失劳动能力和永久残疾", "死亡赔偿金支付给供养亲属"], "link": "https://www.mom.gov.sg/workplace-safety-and-health/work-injury-compensation" },
+      { "icon": "⚖️", "name": "职场公平法", "short": "WFA", "desc": "加强对职场歧视的保护，雇主不得基于年龄、种族、宗教、性别、残疾等受保护特征进行歧视。", "keyPoints": ["禁止在招聘、裁员及雇佣条款中歧视", "受保护特征：年龄、种族、宗教、性别、国籍、残疾、婚姻状况", "要求雇主建立正式申诉处理程序", "雇员可向人力部或TAFEP提出投诉", "禁止对投诉人进行报复"], "link": "https://www.mom.gov.sg/employment-practices/workplace-fairness-legislation" },
+      { "icon": "💰", "name": "中央公积金法", "short": "公积金法", "desc": "强制要求新加坡公民和永久居民缴纳社会保障金，规范缴款率、账户类型及雇主义务。", "keyPoints": ["适用于所有新加坡公民和永久居民雇员，不论薪资高低", "2026年普通工资顶限：每月8000新元", "雇主缴款率因雇员年龄段而异", "公积金须于下月14日前缴纳", "逾期缴款将面临罚款和利息"], "link": "https://www.cpf.gov.sg/employer" },
+      { "icon": "🤝", "name": "TAFEP指导方针", "short": "TAFEP", "desc": "公平与进步就业联盟制定公平招聘、职场骚扰及包容性职场实践的指导方针。", "keyPoints": ["公平考量框架（FCF）——职位广告须在MyCareersFuture发布至少28天", "职位标准须基于真实岗位要求，不得基于国籍或人口特征", "雇主须将招聘决定记录保存2年", "所有雇主须制定性骚扰政策", "TAFEP审计针对外籍员工比例较高的企业"], "link": "https://www.tafep.sg" },
+      { "icon": "📊", "name": "公平招聘框架", "short": "FHF", "desc": "一套确保新加坡劳动力中以才能为本、公平、进步招聘的原则和实践。", "keyPoints": ["所有职位广告须遵守TAFEP三方指导方针", "甄选标准须与职位相关，不得歧视", "雇主须记录并能证明所有招聘决定的合理性", "涵盖招聘、晋升和裁员决定", "不合规可能导致工作准证特权被削减"], "link": "https://www.tafep.sg/fair-hiring" }
+    ]
+  },
+  "privacy": {
+    "title": "隐私政策",
+    "lastUpdated": "最后更新：2026年4月",
+    "sections": [
+      { "heading": "1. 我们收集的信息", "body": "我们收集您直接提供给我们的信息，例如通过联系表格或咨询表格提交的姓名、电子邮件地址、电话号码、公司名称及留言。我们也可能在您访问网站时收集使用数据和分析信息。" },
+      { "heading": "2. 我们如何使用您的信息", "body": "我们将收集的信息用于回复您的查询、提供人力资源咨询和顾问服务、处理咨询预约、发送相关服务信息以及改善我们的网站和服务。" },
+      { "heading": "3. 数据共享", "body": "我们不会出售或出租您的个人数据给第三方。我们可能在严格保密义务下与协助我们运营网站和提供服务的受信任服务提供商（如电子邮件和CRM工具）共享信息。" },
+      { "heading": "4. 数据保留", "body": "我们将在本政策所述目的所需的时间内或法律要求的时间内保留您的个人数据。您可以随时通过enquiry@hccs.sg联系我们要求删除您的数据。" },
+      { "heading": "5. 安全", "body": "我们采取适当的技术和组织措施，防止您的个人数据遭到未授权访问、丢失或泄露。我们的网站使用HTTPS加密，数据库通过访问控制进行保护。" },
+      { "heading": "6. Cookie", "body": "我们的网站使用Cookie和类似追踪技术来改善用户体验并分析网站流量。您可以在浏览器设置中禁用Cookie，但这可能影响某些网站功能。" },
+      { "heading": "7. 您的权利", "body": "根据新加坡《个人数据保护法》（PDPA），您有权访问、更正和撤回对使用您个人数据的同意。如需行使这些权利，请通过enquiry@hccs.sg联系我们。" },
+      { "heading": "8. 联系我们", "body": "如有任何隐私相关的查询或请求，请通过enquiry@hccs.sg或我们的联系表格联系人力资本咨询与服务（新加坡）私人有限公司。" }
+    ]
+  },
+  "terms": {
+    "title": "服务条款",
+    "lastUpdated": "最后更新：2026年4月",
+    "sections": [
+      { "heading": "1. 条款接受", "body": "通过访问或使用HCCS网站和服务，您同意受本服务条款约束。如果您不同意这些条款，请不要使用我们的服务。" },
+      { "heading": "2. 服务", "body": "HCCS提供人力资源咨询、移民顾问、合规扫描工具及AI驱动的人力资源资源。我们的服务以专业顾问为基础提供，不构成法律意见。如需处理法律事务，请咨询合格的新加坡律师。" },
+      { "heading": "3. 知识产权", "body": "本网站上的所有内容，包括文本、模板、工具和品牌，均为人力资本咨询与服务（新加坡）私人有限公司的财产。未经书面同意，禁止复制或再传播。" },
+      { "heading": "4. 会员资格与付款", "body": "会员套餐按年计费。所有付款通过Stripe安全处理。退款按具体情况评估。通过订阅，您授权HCCS向您指定的付款方式收取相应的订阅费用。" },
+      { "heading": "5. 免责声明", "body": "我们的服务和网站内容按'原样'提供，不附任何明示或暗示的保证。HCCS不对信息的准确性、完整性或适用于任何特定目的作出任何陈述。" },
+      { "heading": "6. 责任限制", "body": "在新加坡法律允许的最大范围内，HCCS不对因您使用我们服务而产生的任何间接、附带、特殊或后果性损害承担责任，即使已被告知可能发生此类损害。" },
+      { "heading": "7. 适用法律", "body": "本服务条款受新加坡共和国法律管辖。任何争议均须提交新加坡法院专属管辖。" },
+      { "heading": "8. 联系方式", "body": "如对这些条款有任何疑问，请联系enquiry@hccs.sg。" }
+    ]
+  },
+  "login": {
+    "signInTitle": "欢迎回来",
+    "registerTitle": "创建您的账户",
+    "tabSignIn": "登录",
+    "tabRegister": "注册",
+    "emailLabel": "电子邮件地址",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "密码",
+    "passwordPlaceholder": "••••••••",
+    "confirmPasswordLabel": "确认密码",
+    "confirmPasswordPlaceholder": "••••••••",
+    "signInButton": "登录",
+    "registerButton": "创建账户",
+    "signingIn": "登录中...",
+    "registering": "注册中...",
+    "forgotPassword": "忘记密码？",
+    "errors": {
+      "passwordLength": "密码至少需要6个字符。",
+      "passwordMismatch": "两次输入的密码不一致。",
+      "registrationFailed": "注册失败，请重试。",
+      "loginFailed": "登录失败，请检查您的凭据。",
+      "genericError": "发生错误，请重试。"
+    },
+    "notices": {
+      "registrationSuccess": "注册成功，请登录。"
+    }
+  },
+  "memberPortal": {
+    "title": "会员门户",
+    "welcomeBack": "欢迎回来",
+    "welcomeDesc": "您的AI人力资源工具和优质资源已准备就绪。",
+    "aiTitle": "AI人力资源助手",
+    "aiDesc": "新加坡人力部 · 公积金局 · TAFEP · 雇佣法",
+    "noAssistant": "您当前的套餐不支持AI助手功能。",
+    "videoTitle": "视频洞见库",
+    "quickAccessTitle": "快速访问",
+    "tierLabel": "您的套餐",
+    "upgradeButton": "升级套餐",
+    "locked": "已锁定",
+    "duration": "时长",
+    "quickLinks": [
+      { "label": "预约咨询", "href": "/consultation" },
+      { "label": "免费合规扫描", "href": "/compliance-scan" },
+      { "label": "人力资源新闻", "href": "/hr-news" },
+      { "label": "劳动法律", "href": "/employment-laws" },
+      { "label": "联系支持", "href": "/contact" }
+    ]
+  },
+  "about": {
+    "heroTitle": "关于我们",
+    "heroDesc": "以专业和诚信，战略性地构建您的新加坡劳动力团队。",
+    "visionTitle": "我们的愿景",
+    "missionTitle": "我们的使命",
+    "beliefTitle": "我们的信念",
+    "valuesTitle": "我们的核心价值观",
+    "teamTitle": "我们的领导团队",
+    "advisorsTitle": "顾问委员会",
+    "readProfile": "阅读完整简介",
+    "closeProfile": "关闭 ✕",
+    "keyAchievements": "主要成就",
+    "coreCompetencies": "核心能力",
+    "professionalQualifications": "专业资质",
+    "professionalBackground": "职业背景",
+    "areasOfExpertise": "专业领域",
+    "educationCredentials": "教育与资历",
+    "visionMissionBelief": [
+      { "title": "我们的愿景", "description": "成为企业主和全球人才值得信赖的合作伙伴和坚实后盾——提供以人为本、合规且具前瞻性的人力资源解决方案。" },
+      { "title": "我们的使命", "description": "我们在企业主、中小企业、跨国公司及外籍专业人士旅程的每个阶段提供支持——从企业注册和移民到人力资源管理、法定合规及AI人力资源解决方案。" },
+      { "title": "我们的信念", "description": "\"我们不仅仅是为了处理文件或管理合规而存在。我们致力于在幕后承担重担——让我们的客户能够安心、踏实、从心出发地前行。\"" }
+    ]
+  },
+  "dynamicPages": {
+    "tafepLabel": "TAFEP",
+    "passesLabel": "准证与许可",
+    "workplaceSafetyLabel": "职业安全与健康",
+    "employmentPracticesLabel": "雇佣实践",
+    "exploreMoreResources": "探索更多资源"
+  }
+}
+

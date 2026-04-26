@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
+import { useLang } from "@/lib/i18n";
 
 const videoLibrary = [
   { title: "Understanding the Employment Act 2024 Amendments", duration: "18 min", tier: "Essential", locked: false },
@@ -16,6 +17,8 @@ const videoLibrary = [
 ];
 
 export default function MemberPortalPage() {
+  const { t } = useLang();
+  const mp = t.memberPortal;
   const router = useRouter();
   const [authChecked, setAuthChecked] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -63,9 +66,9 @@ export default function MemberPortalPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900">Member Portal</h1>
+        <h1 className="text-3xl font-extrabold text-gray-900">{mp.title}</h1>
         <p className="text-gray-500 text-sm mt-1">
-          Welcome back{userEmail ? `, ${userEmail}` : ""}. Your AI HR tools and premium resources are ready.
+          {mp.welcomeDesc}{userEmail ? `, ${userEmail}` : ""}
         </p>
       </div>
 
@@ -76,21 +79,22 @@ export default function MemberPortalPage() {
             <div className="bg-emerald-700 text-white px-5 py-4 flex items-center gap-3">
               <span className="text-xl">🤖</span>
               <div>
-                <h2 className="font-semibold">AI HR Assistant</h2>
-                <p className="text-emerald-200 text-xs">Singapore MOM · CPF · TAFEP · Employment Act</p>
+                <h2 className="font-semibold">{mp.aiTitle}</h2>
+                <p className="text-emerald-200 text-xs">{mp.aiDesc}</p>
               </div>
             </div>
 
             <div className="h-[600px]">
               {chatbaseId ? (
                 <iframe
+                  allow="microphone"
                   src={`https://www.chatbase.co/chatbot-iframe/${chatbaseId}`}
                   width="100%"
                   style={{ height: "100%" }}
                 />
               ) : (
                 <div className="h-full flex items-center justify-center text-gray-400 text-sm">
-                  AI assistant is not available for your current plan.
+                  {mp.noAssistant}
                 </div>
               )}
             </div>
@@ -101,34 +105,21 @@ export default function MemberPortalPage() {
         <div className="space-y-5">
           {/* Quick Links */}
           <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-5">
-            <h3 className="font-semibold text-gray-900 mb-3">Quick Access</h3>
+            <h3 className="font-semibold text-gray-900 mb-3">{mp.quickAccessTitle}</h3>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/compliance-scan" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-800">
-                  <span>⚖️</span> Run Compliance Scan
-                </Link>
-              </li>
-              <li>
-                <Link href="/resources" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-800">
-                  <span>📁</span> Download Templates
-                </Link>
-              </li>
-              <li>
-                <Link href="/consultation" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-800">
-                  <span>📅</span> Book Consultation
-                </Link>
-              </li>
-              <li>
-                <Link href="/hr-news" className="flex items-center gap-2 text-emerald-600 hover:text-emerald-800">
-                  <span>📰</span> Latest HR News
-                </Link>
-              </li>
+              {mp.quickLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="flex items-center gap-2 text-emerald-600 hover:text-emerald-800">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Membership Status */}
           <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
-            <h3 className="font-semibold text-gray-900 mb-1">Your Plan</h3>
+            <h3 className="font-semibold text-gray-900 mb-1">{mp.tierLabel}</h3>
             <span className="text-xs font-semibold bg-emerald-600 text-white px-2 py-0.5 rounded-full">{userTierName}</span>
             <p className="text-xs text-gray-500 mt-2">Renews: April 2027</p>
             <Link href="/membership" className="mt-3 block text-xs text-emerald-700 underline">
@@ -139,8 +130,8 @@ export default function MemberPortalPage() {
       </div>
 
       {/* Video Library */}
-      <section className="mt-10">
-        <h2 className="text-xl font-bold text-gray-900 mb-5">Video Insights Library</h2>
+      {/* <section className="mt-10">
+        <h2 className="text-xl font-bold text-gray-900 mb-5">{mp.videoTitle}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {videoLibrary.map((v) => (
             <div
@@ -164,7 +155,7 @@ export default function MemberPortalPage() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

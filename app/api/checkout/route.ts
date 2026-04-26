@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
+import { createClient } from "@supabase/supabase-js";
 
 const PLANS: Record<
   string,
@@ -15,6 +16,11 @@ const PLANS: Record<
 
 function toAirwallexDescriptor(): string {
   return "Essential";
+}
+
+function toShopperCountryCode(input: unknown): string {
+  const value = typeof input === "string" ? input.trim().toUpperCase() : "";
+  return /^[A-Z]{2}$/.test(value) ? value : "SG";
 }
 
 async function getAirwallexToken(): Promise<string> {
@@ -43,8 +49,54 @@ async function getAirwallexToken(): Promise<string> {
 
 export async function POST(req: NextRequest) {
   try {
+    const authHeader = req.headers.get("authorization") || "";
+    const authToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+
+    if (!authToken) {
+      return NextResponse.json({ error: "Please sign in to continue checkout." }, { status: 401 });
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !anonKey || !serviceRoleKey) {
+      return NextResponse.json({ error: "Server configuration error." }, { status: 500 });
+    }
+
+    const authClient = createClient(supabaseUrl, anonKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+
+    const {
+      data: { user },
+      error: userError,
+    } = await authClient.auth.getUser(authToken);
+
+    if (userError || !user) {
+      return NextResponse.json({ error: "Please sign in to continue checkout." }, { status: 401 });
+    }
+
+    const admin = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+
+    const { data: appUser, error: appUserError } = await admin
+      .from("user")
+      .select("id")
+      .eq("id", user.id)
+      .single();
+
+    if (appUserError || !appUser) {
+      return NextResponse.json(
+        { error: "Please register your account before checking out." },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
     const plan = typeof body?.plan === "string" ? body.plan : "";
+    const countryCode = toShopperCountryCode(body?.country_code);
     const planConfig = PLANS[plan];
 
     if (!planConfig) {
@@ -55,7 +107,7 @@ export async function POST(req: NextRequest) {
     const baseUrl = env === "prod" ? "https://api.airwallex.com" : "https://api-demo.airwallex.com";
     const apiVersion = process.env.AIRWALLEX_API_VERSION ?? "2026-02-27";
 
-    const token = await getAirwallexToken();
+    const airwallexToken = await getAirwallexToken();
 
     const intentRes = await fetch(
       `${baseUrl}/api/v1/pa/payment_intents/create`,
@@ -63,7 +115,7 @@ export async function POST(req: NextRequest) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${airwallexToken}`,
           "x-api-version": apiVersion,
         },
         body: JSON.stringify({
@@ -103,6 +155,7 @@ export async function POST(req: NextRequest) {
       amount: planConfig.amount,
       currency: planConfig.currency,
       plan_name: planConfig.name,
+      country_code: countryCode,
     });
   } catch (err) {
     console.error("Checkout error:", err);

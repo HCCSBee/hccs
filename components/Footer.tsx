@@ -1,16 +1,18 @@
+"use client";
+
 import Link from "next/link";
+import { useLang } from "@/lib/i18n";
 
 export default function Footer() {
+  const { t } = useLang();
+  const f = t.footer;
+
   return (
     <footer className="bg-gray-900 text-gray-300 mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         <div>
           <h3 className="text-white font-bold text-lg mb-3">HCCS</h3>
-          <p className="text-sm leading-relaxed">
-            Human Capital Consulting &amp; Services (Spore) Pte Ltd<br />
-            MOM-registered, Licensed EA Agency<br />
-            25+ years experience
-          </p>
+          <p className="text-sm leading-relaxed whitespace-pre-line">{f.tagline}</p>
           <p className="mt-4 text-sm">
             10 Anson Road #33-15<br />
             International Plaza<br />
@@ -19,33 +21,33 @@ export default function Footer() {
         </div>
 
         <div>
-          <h3 className="text-white font-semibold mb-3">Services</h3>
+          <h3 className="text-white font-semibold mb-3">{f.services}</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">EP / PR Applications</Link></li>
-            <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">HR Compliance</Link></li>
-            <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">Workforce Planning</Link></li>
-            <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">Fractional HR</Link></li>
-            <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">AI HR Solutions</Link></li>
-            <li><Link href="/compliance-scan" className="hover:text-emerald-400 transition-colors">Free Compliance Scan</Link></li>
+            <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">{f.epPr}</Link></li>
+            <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">{f.hrCompliance}</Link></li>
+            <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">{f.workforcePlanning}</Link></li>
+            <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">{f.fractionalHr}</Link></li>
+            <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">{f.aiHr}</Link></li>
+            <li><Link href="/compliance-scan" className="hover:text-emerald-400 transition-colors">{f.freeScan}</Link></li>
           </ul>
         </div>
 
         <div>
-          <h3 className="text-white font-semibold mb-3">Company</h3>
+          <h3 className="text-white font-semibold mb-3">{f.company}</h3>
           <ul className="space-y-2 text-sm">
-            <li><Link href="/about" className="hover:text-emerald-400 transition-colors">About Us</Link></li>
-            <li><Link href="/membership" className="hover:text-emerald-400 transition-colors">Membership</Link></li>
-            <li><Link href="/hr-news" className="hover:text-emerald-400 transition-colors">HR News</Link></li>
-            <li><Link href="/employment-laws" className="hover:text-emerald-400 transition-colors">Employment Laws</Link></li>
-            <li><Link href="/resources" className="hover:text-emerald-400 transition-colors">Resources</Link></li>
-            <li><Link href="/contact" className="hover:text-emerald-400 transition-colors">Contact</Link></li>
-            <li><Link href="/privacy" className="hover:text-emerald-400 transition-colors">Privacy Policy</Link></li>
-            <li><Link href="/terms" className="hover:text-emerald-400 transition-colors">Terms of Service</Link></li>
+            <li><Link href="/about" className="hover:text-emerald-400 transition-colors">{f.aboutUs}</Link></li>
+            <li><Link href="/membership" className="hover:text-emerald-400 transition-colors">{t.nav.membership}</Link></li>
+            <li><Link href="/hr-news" className="hover:text-emerald-400 transition-colors">{f.hrNews}</Link></li>
+            <li><Link href="/employment-laws" className="hover:text-emerald-400 transition-colors">{f.employmentLaws}</Link></li>
+            <li><Link href="/resources" className="hover:text-emerald-400 transition-colors">{t.nav.resources}</Link></li>
+            <li><Link href="/contact" className="hover:text-emerald-400 transition-colors">{f.contact}</Link></li>
+            <li><Link href="/privacy" className="hover:text-emerald-400 transition-colors">{f.privacy}</Link></li>
+            <li><Link href="/terms" className="hover:text-emerald-400 transition-colors">{f.terms}</Link></li>
           </ul>
         </div>
 
         <div>
-          <h3 className="text-white font-semibold mb-3">Contact</h3>
+          <h3 className="text-white font-semibold mb-3">{f.contact}</h3>
           <ul className="space-y-2 text-sm">
             <li>
               <a href="mailto:enquiry@hccs.sg" className="hover:text-emerald-400 transition-colors">
@@ -64,7 +66,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="hover:text-emerald-400 transition-colors"
               >
-                WhatsApp Us
+                {f.whatsapp}
               </a>
             </li>
           </ul>
@@ -84,15 +86,104 @@ export default function Footer() {
             href="/consultation"
             className="mt-5 inline-block bg-emerald-600 text-white text-sm px-4 py-2 rounded hover:bg-emerald-700 transition-colors"
           >
-            Book Free Consultation
+            {f.bookConsultation}
           </Link>
         </div>
       </div>
 
       <div className="border-t border-gray-800 text-center text-xs py-4 text-gray-500">
-        © {new Date().getFullYear()} Human Capital Consulting &amp; Services (Spore) Pte Ltd. All rights reserved.
-        &nbsp;|&nbsp; Bilingual Support: EN / 中文
+        {`© ${new Date().getFullYear()} Human Capital Consulting & Services (Spore) Pte Ltd. All rights reserved. | `}{f.bilingualNote}
       </div>
     </footer>
   );
 }
+
+//         Human Capital Consulting &amp; Services (Spore) Pte Ltd<br />
+//         MOM-registered, Licensed EA Agency<br />
+//         25+ years experience
+//       </p>
+//       <p className="mt-4 text-sm">
+//         10 Anson Road #33-15<br />
+//         International Plaza<br />
+//         Singapore 079903
+//       </p>
+//     </div>
+
+//     <div>
+//       <h3 className="text-white font-semibold mb-3">Services</h3>
+//       <ul className="space-y-2 text-sm">
+//         <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">EP / PR Applications</Link></li>
+//         <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">HR Compliance</Link></li>
+//         <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">Workforce Planning</Link></li>
+//         <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">Fractional HR</Link></li>
+//         <li><Link href="/employer" className="hover:text-emerald-400 transition-colors">AI HR Solutions</Link></li>
+//         <li><Link href="/compliance-scan" className="hover:text-emerald-400 transition-colors">Free Compliance Scan</Link></li>
+//       </ul>
+//     </div>
+
+//     <div>
+//       <h3 className="text-white font-semibold mb-3">Company</h3>
+//       <ul className="space-y-2 text-sm">
+//         <li><Link href="/about" className="hover:text-emerald-400 transition-colors">About Us</Link></li>
+//         <li><Link href="/membership" className="hover:text-emerald-400 transition-colors">Membership</Link></li>
+//         <li><Link href="/hr-news" className="hover:text-emerald-400 transition-colors">HR News</Link></li>
+//         <li><Link href="/employment-laws" className="hover:text-emerald-400 transition-colors">Employment Laws</Link></li>
+//         <li><Link href="/resources" className="hover:text-emerald-400 transition-colors">Resources</Link></li>
+//         <li><Link href="/contact" className="hover:text-emerald-400 transition-colors">Contact</Link></li>
+//         <li><Link href="/privacy" className="hover:text-emerald-400 transition-colors">Privacy Policy</Link></li>
+//         <li><Link href="/terms" className="hover:text-emerald-400 transition-colors">Terms of Service</Link></li>
+//       </ul>
+//     </div>
+
+//     <div>
+//       <h3 className="text-white font-semibold mb-3">Contact</h3>
+//       <ul className="space-y-2 text-sm">
+//         <li>
+//           <a href="mailto:enquiry@hccs.sg" className="hover:text-emerald-400 transition-colors">
+//             enquiry@hccs.sg
+//           </a>
+//         </li>
+//         <li>
+//           <a href="tel:+6594362866" className="hover:text-emerald-400 transition-colors">
+//             +65 9436-2866
+//           </a>
+//         </li>
+//         <li>
+//           <a
+//             href="https://wa.me/6565943628"
+//             target="_blank"
+//             rel="noopener noreferrer"
+//             className="hover:text-emerald-400 transition-colors"
+//           >
+//             WhatsApp Us
+//           </a>
+//         </li>
+//       </ul>
+//       <div className="mt-4 flex gap-3 text-sm">
+//         <a
+//           href="https://www.tiktok.com/@askbeebeesghr"
+//           target="_blank"
+//           rel="noopener noreferrer"
+//           className="hover:text-emerald-400 transition-colors"
+//         >
+//           TikTok
+//         </a>
+//         <a href="#" className="hover:text-emerald-400 transition-colors">LinkedIn</a>
+//         <a href="#" className="hover:text-emerald-400 transition-colors">Facebook</a>
+//       </div>
+//       <Link
+//         href="/consultation"
+//         className="mt-5 inline-block bg-emerald-600 text-white text-sm px-4 py-2 rounded hover:bg-emerald-700 transition-colors"
+//       >
+//         Book Free Consultation
+//       </Link>
+//     </div>
+//   </div>
+
+//   <div className="border-t border-gray-800 text-center text-xs py-4 text-gray-500">
+//     © {new Date().getFullYear()} Human Capital Consulting &amp; Services (Spore) Pte Ltd. All rights reserved.
+//     &nbsp;|&nbsp; Bilingual Support: EN / 中文
+//   </div>
+// </footer>
+// );
+// }

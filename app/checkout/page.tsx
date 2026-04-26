@@ -4,11 +4,16 @@ export const dynamic = "force-dynamic";
 import { useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase/client";
 
 
 const PLAN_DISPLAY: Record<string, { label: string; price: string; period: string }> = {
   essential: { label: "Essential", price: "S$5,988", period: "/ year" },
 };
+
+function toAirwallexClientEnv(env?: string): "demo" | "prod" {
+  return env === "prod" ? "prod" : "demo";
+}
 
 function CheckoutContent() {
   const dropinRef = useRef<HTMLDivElement | null>(null);
@@ -19,6 +24,7 @@ function CheckoutContent() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [authChecked, setAuthChecked] = useState(false);
   const mountedRef = useRef(false);
 
   useEffect(() => {
@@ -27,12 +33,34 @@ function CheckoutContent() {
 
     (async () => {
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+          router.replace(`/login?mode=signin&next=${encodeURIComponent(`/checkout?plan=${plan}`)}`);
+          return;
+        }
+
+        setAuthChecked(true);
+
         const res = await fetch("/api/checkout", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
           body: JSON.stringify({ plan }),
         });
         const data = await res.json();
+
+        if (res.status === 401) {
+          router.replace(`/login?mode=signin&next=${encodeURIComponent(`/checkout?plan=${plan}`)}`);
+          return;
+        }
+
+        if (res.status === 403) {
+          router.replace("/login?mode=register");
+          return;
+        }
 
         if (data.error) {
           setError(data.error);
@@ -43,17 +71,37 @@ function CheckoutContent() {
         // Dynamically import Airwallex to avoid SSR issues
         const awx = await import("@airwallex/components-sdk");
         await awx.init({
-          env: "sandbox",
+          env: toAirwallexClientEnv(process.env.NEXT_PUBLIC_AIRWALLEX_ENV),
         });
         
-        const element = await awx.createElement("card", {
+        const element = await awx.createElement("dropIn", {
           intent_id: data.intent_id,
           client_secret: data.client_secret,
           currency: data.currency,
+          country_code: data.country_code ?? "SG",
         });
         
-        element.on("success", () => {
-          router.push("/consultation-success");
+        console.log(element);
+        element.on("success", async () => {
+          try {
+            const upgradeRes = await fetch("/api/checkout/sandbox-success", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${session.access_token}`,
+              },
+            });
+
+            const upgradeData = await upgradeRes.json();
+            if (!upgradeRes.ok) {
+              setError(upgradeData?.error || "Payment succeeded, but membership upgrade failed.");
+              return;
+            }
+
+            router.push("/member-portal");
+          } catch (upgradeError) {
+            console.error("Tier upgrade error:", upgradeError);
+            setError("Payment succeeded, but membership upgrade failed.");
+          }
         });
         
         element.on("error", (err: unknown) => {
@@ -72,6 +120,7 @@ function CheckoutContent() {
       } catch (err) {
         console.error("Checkout init error:", err);
         setError("Failed to initialize checkout. Please try again.");
+      } finally {
         setLoading(false);
       }
     })();
@@ -148,9 +197,18 @@ function CheckoutContent() {
               </div>
             )}
 
-            {/* Airwallex Drop-in Element mounts here */}
+            {loading && !error && (
+              <div className="flex items-center justify-center py-12">
+                <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+                <span className="ml-3 text-sm text-gray-500">
+                  {!authChecked ? "Checking your account..." : "Preparing secure checkout..."}
+                </span>
+              </div>
+            )}
+
+            {/* Airwallex DropIn element mounts here */}
             {/* <div id="airwallex-dropin" className={loading ? "hidden" : ""} /> */}
-            <div ref={dropinRef} className="min-h-[400px]" />
+            <div ref={dropinRef} className={loading ? "hidden" : "min-h-[400px]"} />
             
           </div>
         </div>
