@@ -673,34 +673,42 @@
         "governmentLinks": [
             {
                 "label": "CPF Board",
+                "href": "https://www.cpf.gov.sg",
                 "description": "Central Provident Fund rules, employer obligations, and contribution guidance."
             },
             {
                 "label": "Ministry of Manpower",
+                "href": "https://www.mom.gov.sg",
                 "description": "Employment practices, work pass rules, and core labor regulations in Singapore."
             },
             {
                 "label": "Inland Revenue Authority",
+                "href": "https://www.iras.gov.sg",
                 "description": "Corporate tax, payroll tax reporting, and tax compliance information."
             },
             {
                 "label": "Accounting & Corporate Regulatory Authority",
+                "href": "https://www.acra.gov.sg",
                 "description": "Business registration, filing requirements, and corporate governance matters."
             },
             {
                 "label": "Immigration & Checkpoints Authority",
+                "href": "https://www.ica.gov.sg",
                 "description": "Immigration policies and entry requirements for Singapore."
             },
             {
                 "label": "Singapore National Employers Federation",
+                "href": "https://www.snef.org.sg",
                 "description": "Employer-focused updates, advisory material, and industrial relations support."
             },
             {
                 "label": "Tripartite Alliance for Fair & Progressive Employment",
+                "href": "https://www.tafep.sg",
                 "description": "Fair hiring practices, workplace guidelines, and anti-discrimination advisories."
             },
             {
                 "label": "National Trades Union Congress",
+                "href": "https://www.ntuc.org.sg",
                 "description": "Workplace support ecosystem and labor movement resources."
             }
         ],

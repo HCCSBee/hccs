@@ -40,7 +40,7 @@ export default function ResourcesClient() {
           {r.governmentLinks.map((link) => (
             <a
               key={link.label}
-              href={governmentUrls[link.label] ?? "#"}
+              href={link.href ?? "#"}
               target="_blank"
               rel="noopener noreferrer"
               className="group flex flex-col justify-between bg-white border border-gray-100 rounded-xl p-5 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all"

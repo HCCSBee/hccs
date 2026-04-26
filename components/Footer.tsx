@@ -9,7 +9,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-gray-900 text-gray-300 mt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
         <div>
           <h3 className="text-white font-bold text-lg mb-3">HCCS</h3>
           <p className="text-sm leading-relaxed whitespace-pre-line">{f.tagline}</p>
@@ -43,6 +43,24 @@ export default function Footer() {
             <li><Link href="/contact" className="hover:text-emerald-400 transition-colors">{f.contact}</Link></li>
             <li><Link href="/privacy" className="hover:text-emerald-400 transition-colors">{f.privacy}</Link></li>
             <li><Link href="/terms" className="hover:text-emerald-400 transition-colors">{f.terms}</Link></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-white font-semibold mb-3">{t.resources.govLinksTitle}</h3>
+          <ul className="space-y-2 text-sm">
+            {t.resources.governmentLinks.map((item: { label: string; href: string }, idx: number) => (
+              <li key={idx}>
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-emerald-400 transition-colors"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
 
