@@ -338,7 +338,7 @@ export async function POST(req) {
 
       await transporter.sendMail({
         from: `"HCCS" <${EMAIL_ADDRESS}>`,
-        to: body.business_email,
+        to: [body.business_email, 'yewyang@cysoft.co', 'enquiry@hccs.sg'].filter(Boolean).join(','),
         subject: "Your HCCS HR Compliance Scan Report",
         text: `Hi ${body.contact_name || "there"},\n\nThank you for completing the HCCS HR Compliance Scan.\n\nRisk Level: ${body.results?.riskLevel || "N/A"}\nTotal Score: ${body.results?.totalScore ?? 0}\nPrimary Risk: ${body.results?.primaryRisk || "N/A"}\n\nYour full report is attached as a PDF.\n\nTo book a free expert review, visit: https://hccs.sg/consultation\n\nHCCS Team`,
         html,
