@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
+import { createServerClient } from "@/lib/supabase/server";
 import ServiceDetailClient from "./ServiceDetailClient";
 
 type ServicePageProps = {
@@ -9,14 +9,15 @@ type ServicePageProps = {
 
 export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
   const { slug } = await params;
+  const supabase = createServerClient();
 
-  const { data: service } = await supabase
+  const { data: service, error } = await supabase
     .from("services")
     .select("title, short_description")
     .eq("slug", slug)
     .single();
 
-  if (!service) {
+  if (!service || error) {
     return { title: "Service Not Found | HCCS" };
   }
 
@@ -28,14 +29,15 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 
 export default async function ServiceDetailPage({ params }: ServicePageProps) {
   const { slug } = await params;
+  const supabase = createServerClient();
 
-  const { data: service } = await supabase
+  const { data: service, error: serviceError } = await supabase
     .from("services")
     .select("id, title, short_description, long_description")
     .eq("slug", slug)
     .single();
 
-  if (!service) {
+  if (!service || serviceError) {
     notFound();
   }
 

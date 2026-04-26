@@ -14,7 +14,7 @@
     "book": "Book"
   },
   "footer": {
-    "tagline": "Human Capital Consulting & Services (Spore) Pte Ltd\nMOM-registered, Licensed EA Agency\n25+ years experience",
+    "tagline": "Human Capital Consulting & Services (Spore) Pte Ltd\n25+ years experience",
     "services": "Services",
     "epPr": "EP / PR Applications",
     "hrCompliance": "HR Compliance",
@@ -80,8 +80,8 @@
     "video": "Video"
   },
   "home": {
-    "heroBadge": "MOM-Registered · Licensed EA Agency · 25+ Years Experience",
-    "heroTitle": "Professional HR Compliance Consultancy For Singapore Employers",
+    "heroBadge": "25+ Years Experience",
+    "heroTitle": "Start–Staff–Scale Your SG Business",
     "heroDesc": "We provide end-to-end support to companies, from incorporation to industry-specific guidance on operating in Singapore, ensuring full legal and regulatory compliance. We also manage HR functions to enable smooth operations, leveraging AI-driven solutions, including an AI-powered talent acquisition and HR services platform.",
     "heroBook": "Book Free Consultation",
     "heroScan": "Free Compliance Scan",
