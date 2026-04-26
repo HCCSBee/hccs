@@ -124,6 +124,7 @@ export async function POST(req: NextRequest) {
           amount: planConfig.amount,
           currency: planConfig.currency,
           descriptor: toAirwallexDescriptor(),
+          payment_method_types: ["card", "paynow", "alipay"],
           order: {
             products: [
               {

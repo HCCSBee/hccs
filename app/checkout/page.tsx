@@ -79,6 +79,7 @@ function CheckoutContent() {
           client_secret: data.client_secret,
           currency: data.currency,
           country_code: data.country_code ?? "SG",
+          
         });
         
         console.log(element);
