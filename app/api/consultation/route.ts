@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-
-import nodemailer from 'nodemailer';
+import { Resend } from "resend";
 
 type ConsultationPayload = {
   name?: string;
@@ -48,19 +47,11 @@ export async function POST(req: Request) {
     }
 
 
-    const EMAIL_ADDRESS = process.env.EMAIL_ADDRESS;
-    const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
+    const resendApiKey = process.env.RESEND_API_KEY?.trim();
+    const resendFrom = "mail@hccs.sg"
 
-    if (EMAIL_ADDRESS && EMAIL_PASSWORD) {
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-          user: EMAIL_ADDRESS,
-          pass: EMAIL_PASSWORD,
-        },
-      });
+    if (resendApiKey) {
+      const resend = new Resend(resendApiKey);
 
       const html = `
 <!DOCTYPE html>
@@ -154,10 +145,10 @@ export async function POST(req: Request) {
 </body>
 </html>`;
 
-      await transporter.sendMail({
-        from: `"HCCS" <${EMAIL_ADDRESS}>`,
-        to: [body.email, 'yewyang@cysoft.co', 'enquiry@hccs.sg'].filter(Boolean).join(','),
-        subject: 'Your Consultation Request – HCCS',
+      await resend.emails.send({
+        from: `HCCS <${resendFrom}>`,
+        to: [body.email, "yewyang@cysoft.co", "enquiry@hccs.sg", "beebee@hccs.sg"].filter(Boolean) as string[],
+        subject: "Your Consultation Request – HCCS",
         text: `Hi ${body.name},\n\nThank you for your consultation request. We will be in touch within 1–2 business days.\n\nDetails:\nCompany: ${body.company || "—"}\nIndustry: ${body.industry || "—"}\nService: ${body.service || "—"}\nPhone: ${body.phone || "—"}\nMessage: ${body.message}\n\nHCCS Team`,
         html,
       });

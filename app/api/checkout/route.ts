@@ -85,6 +85,16 @@ const PLAN_ROWS_BY_ID: Record<number, PlanConfig> = {
     cycle: "monthly",
     descriptor: "Essential Bundle",
   },
+  8: {
+    id: 8,
+    plan: "expert-advisory",
+    name: "HCCS Expert Advisory",
+    amount: 1500,
+    currency: "SGD",
+    description: "HCCS Expert Advisory - 60-Minute Session",
+    cycle: "annual",
+    descriptor: "Expert Advisory",
+  },
 };
 
 const DEFAULT_PLAN_ID_BY_KEY: Record<string, Record<BillingCycle, number>> = {
@@ -92,6 +102,7 @@ const DEFAULT_PLAN_ID_BY_KEY: Record<string, Record<BillingCycle, number>> = {
   professional: { monthly: 3, annual: 4 },
   strategic: { monthly: 5, annual: 6 },
   "essential-bundle": { monthly: 7, annual: 7 },
+  "expert-advisory": { monthly: 8, annual: 8 },
 };
 
 function toShopperCountryCode(input: unknown): string {
@@ -121,6 +132,78 @@ async function getAirwallexToken(): Promise<string> {
 
   const data = await res.json();
   return data.token as string;
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    const authHeader = req.headers.get("authorization") || "";
+    const authToken = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
+
+    if (!authToken) {
+      return NextResponse.json({ error: "Please sign in to continue checkout." }, { status: 401 });
+    }
+
+    const intentId = req.nextUrl.searchParams.get("intentId")?.trim();
+
+    if (!intentId) {
+      return NextResponse.json({ error: "Missing payment intent id." }, { status: 400 });
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !anonKey) {
+      return NextResponse.json({ error: "Server configuration error." }, { status: 500 });
+    }
+
+    const authClient = createClient(supabaseUrl, anonKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+
+    const {
+      data: { user },
+      error: userError,
+    } = await authClient.auth.getUser(authToken);
+
+    if (userError || !user) {
+      return NextResponse.json({ error: "Please sign in to continue checkout." }, { status: 401 });
+    }
+
+    const env = process.env.AIRWALLEX_ENV ?? "sandbox";
+    const baseUrl = env === "prod" ? "https://api.airwallex.com" : "https://api-demo.airwallex.com";
+    const apiVersion = process.env.AIRWALLEX_API_VERSION ?? "2026-02-27";
+    const airwallexToken = await getAirwallexToken();
+
+    const intentRes = await fetch(`${baseUrl}/api/v1/pa/payment_intents/${intentId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${airwallexToken}`,
+        "x-api-version": apiVersion,
+      },
+    });
+
+    if (!intentRes.ok) {
+      const err = await intentRes.text();
+      console.error("Airwallex intent status error:", err);
+      return NextResponse.json(
+        { error: "Failed to fetch payment intent status." },
+        { status: 500 }
+      );
+    }
+
+    const intent = await intentRes.json();
+
+    return NextResponse.json({
+      status: intent.status as string,
+      latest_payment_attempt_status: intent.latest_payment_attempt?.status as string | undefined,
+    });
+  } catch (err) {
+    console.error("Checkout status error:", err);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -208,7 +291,7 @@ export async function POST(req: NextRequest) {
           amount: planConfig.amount,
           currency: planConfig.currency,
           descriptor: planConfig.descriptor,
-          payment_method_types: ["card", "paynow", "alipay"],
+          payment_method_types: ["card", "alipay", "pay_now"],
           order: {
             products: [
               {

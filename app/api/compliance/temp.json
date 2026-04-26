@@ -1,0 +1,14 @@
+{
+    "totalScore": 9,
+    "riskLevel": "HIGH",
+    "hasCriticalOverride": true,
+    "primaryRisk": "MOM",
+    "alerts": [
+        "MOM Risk Alert: Possible gaps in contracts, payslips, records or termination process."
+    ],
+    "recommendations": [
+        "Review MOM guidelines on employment practices.",
+        "Ensure all employee documentation is complete and up-to-date.",
+        "Consider consulting with an employment law expert to mitigate risks."
+    ]
+}

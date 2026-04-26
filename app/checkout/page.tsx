@@ -8,7 +8,7 @@ import { supabase } from "@/lib/supabase/client";
 
 type BillingCycle = "monthly" | "annual";
 
-const PLAN_ROWS_BY_ID: Record<number, { plan: string; label: string; price: number; cycle: BillingCycle }> = {
+const PLAN_ROWS_BY_ID: Record<number, { plan: string; label: string; price: number; cycle: BillingCycle; kind?: "subscription" | "one-time" }> = {
   1: { plan: "essential", label: "Essential", price: 499, cycle: "monthly" },
   2: { plan: "essential", label: "Essential", price: 5988, cycle: "annual" },
   3: { plan: "professional", label: "Professional", price: 999, cycle: "monthly" },
@@ -16,6 +16,7 @@ const PLAN_ROWS_BY_ID: Record<number, { plan: string; label: string; price: numb
   5: { plan: "strategic", label: "Strategic", price: 1499, cycle: "monthly" },
   6: { plan: "strategic", label: "Strategic", price: 17988, cycle: "annual" },
   7: { plan: "essential-bundle", label: "Essential Bundle", price: 997, cycle: "monthly" },
+  8: { plan: "expert-advisory", label: "Expert Advisory", price: 1500, cycle: "annual", kind: "one-time" },
 };
 
 const DEFAULT_PLAN_ID_BY_KEY: Record<string, Record<BillingCycle, number>> = {
@@ -23,14 +24,24 @@ const DEFAULT_PLAN_ID_BY_KEY: Record<string, Record<BillingCycle, number>> = {
   professional: { monthly: 3, annual: 4 },
   strategic: { monthly: 5, annual: 6 },
   "essential-bundle": { monthly: 7, annual: 7 },
+  "expert-advisory": { monthly: 8, annual: 8 },
 };
 
 function toAirwallexClientEnv(env?: string): "demo" | "prod" {
   return env === "prod" ? "prod" : "demo";
 }
 
+type CheckoutIntentState = {
+  intentId: string;
+  clientSecret: string;
+  currency: string;
+  countryCode: string;
+};
+
 function CheckoutContent() {
-  const dropinRef = useRef<HTMLDivElement | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const statusPollRef = useRef<number | null>(null);
+  const handledResultRef = useRef(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const plan = searchParams.get("plan") ?? "essential";
@@ -49,6 +60,150 @@ function CheckoutContent() {
     if (mountedRef.current) return;
     mountedRef.current = true;
 
+    const intentStorageKey = `checkout:intent:${planId}:${planInfo.cycle}`;
+
+    const readStoredIntent = (): CheckoutIntentState | null => {
+      const rawValue = window.sessionStorage.getItem(intentStorageKey);
+
+      if (!rawValue) {
+        return null;
+      }
+
+      try {
+        const parsed = JSON.parse(rawValue) as Partial<CheckoutIntentState>;
+
+        if (!parsed.intentId || !parsed.clientSecret || !parsed.currency) {
+          window.sessionStorage.removeItem(intentStorageKey);
+          return null;
+        }
+
+        return {
+          intentId: parsed.intentId,
+          clientSecret: parsed.clientSecret,
+          currency: parsed.currency,
+          countryCode: parsed.countryCode ?? "SG",
+        };
+      } catch {
+        window.sessionStorage.removeItem(intentStorageKey);
+        return null;
+      }
+    };
+
+    const storeIntent = (intent: CheckoutIntentState) => {
+      window.sessionStorage.setItem(intentStorageKey, JSON.stringify(intent));
+    };
+
+    const clearStoredIntent = () => {
+      window.sessionStorage.removeItem(intentStorageKey);
+    };
+
+    const stopStatusPolling = () => {
+      if (statusPollRef.current !== null) {
+        window.clearInterval(statusPollRef.current);
+        statusPollRef.current = null;
+      }
+    };
+
+    const handleCheckoutError = (message: string, details?: unknown) => {
+      if (handledResultRef.current) {
+        return;
+      }
+
+      handledResultRef.current = true;
+      stopStatusPolling();
+      clearStoredIntent();
+
+      if (details !== undefined) {
+        console.error("[Checkout] Payment error:", details);
+      }
+
+      setError(message);
+    };
+
+    const handleCheckoutSuccess = async (accessToken: string) => {
+      if (handledResultRef.current) {
+        return;
+      }
+
+      handledResultRef.current = true;
+      stopStatusPolling();
+      clearStoredIntent();
+
+      console.log("[Checkout] Handling successful payment. Plan:", planInfo.plan);
+
+      if (planInfo.plan === "expert-advisory") {
+        window.location.href = "https://calendly.com/calendar-hccs/expert-advisory";
+        return;
+      }
+
+      try {
+        const upgradeRes = await fetch("/api/checkout/sandbox-success", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const upgradeData = await upgradeRes.json();
+        console.log("[Checkout] Upgrade response:", upgradeRes.status, upgradeData);
+        if (!upgradeRes.ok) {
+          handledResultRef.current = false;
+          setError(upgradeData?.error || "Payment succeeded, but membership upgrade failed.");
+          return;
+        }
+
+        window.location.href = "/member-portal";
+      } catch (upgradeError) {
+        handledResultRef.current = false;
+        console.error("[Checkout] Tier upgrade error:", upgradeError);
+        setError("Payment succeeded, but membership upgrade failed.");
+      }
+    };
+
+    const fetchIntentStatus = async (intentId: string, accessToken: string) => {
+      const statusRes = await fetch(`/api/checkout?intentId=${encodeURIComponent(intentId)}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      if (!statusRes.ok) {
+        console.error("[Checkout] Failed to poll payment status:", statusRes.status);
+        return null;
+      }
+
+      return statusRes.json();
+    };
+
+    const startStatusPolling = (intentId: string, accessToken: string) => {
+      if (!intentId || handledResultRef.current || statusPollRef.current !== null) {
+        return;
+      }
+
+      const pollStatus = async () => {
+        try {
+          const statusData = await fetchIntentStatus(intentId, accessToken);
+
+          if (!statusData) {
+            return;
+          }
+
+          console.log("[Checkout] Polled payment status:", statusData.status, statusData.latest_payment_attempt_status);
+
+          if (statusData.status === "SUCCEEDED") {
+            await handleCheckoutSuccess(accessToken);
+            return;
+          }
+
+          if (["FAILED", "CANCELLED"].includes(statusData.status)) {
+            handleCheckoutError("Payment failed. Please check your details and try again.", statusData);
+          }
+        } catch (pollError) {
+          console.error("[Checkout] Payment status poll error:", pollError);
+        }
+      };
+
+      void pollStatus();
+      statusPollRef.current = window.setInterval(() => {
+        void pollStatus();
+      }, 2000);
+    };
+
     (async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -62,30 +217,67 @@ function CheckoutContent() {
 
         setAuthChecked(true);
 
-        const res = await fetch("/api/checkout", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({ plan, planId, billing_cycle: planInfo.cycle }),
-        });
-        const data = await res.json();
+        const accessToken = session?.access_token ?? "";
+        let checkoutIntent = readStoredIntent();
 
-        if (res.status === 401) {
-          router.replace(`/login?mode=signin&next=${encodeURIComponent(currentCheckoutPath)}`);
-          return;
+        if (checkoutIntent) {
+          const existingStatus = await fetchIntentStatus(checkoutIntent.intentId, accessToken);
+
+          if (existingStatus?.status === "SUCCEEDED") {
+            await handleCheckoutSuccess(accessToken);
+            return;
+          }
+
+          if (existingStatus && ["FAILED", "CANCELLED"].includes(existingStatus.status)) {
+            clearStoredIntent();
+            checkoutIntent = null;
+          }
         }
 
-        if (res.status === 403) {
-          router.replace("/login?mode=register");
-          return;
-        }
+        let data:
+          | {
+              intent_id: string;
+              client_secret: string;
+              currency: string;
+              country_code?: string;
+              error?: string;
+            }
+          | null = null;
 
-        if (data.error) {
-          setError(data.error);
-          setLoading(false);
-          return;
+        if (!checkoutIntent) {
+          const res = await fetch("/api/checkout", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ plan, planId, billing_cycle: planInfo.cycle }),
+          });
+          data = await res.json();
+
+          if (res.status === 401) {
+            router.replace(`/login?mode=signin&next=${encodeURIComponent(currentCheckoutPath)}`);
+            return;
+          }
+
+          if (res.status === 403) {
+            router.replace("/login?mode=register");
+            return;
+          }
+
+          if (data.error) {
+            setError(data.error);
+            setLoading(false);
+            return;
+          }
+
+          checkoutIntent = {
+            intentId: data.intent_id,
+            clientSecret: data.client_secret,
+            currency: data.currency,
+            countryCode: data.country_code ?? "SG",
+          };
+          storeIntent(checkoutIntent);
         }
 
         // Dynamically import Airwallex to avoid SSR issues
@@ -93,48 +285,33 @@ function CheckoutContent() {
         await awx.init({
           env: toAirwallexClientEnv(process.env.NEXT_PUBLIC_AIRWALLEX_ENV),
         });
-        
+
         const element = await awx.createElement("dropIn", {
-          intent_id: data.intent_id,
-          client_secret: data.client_secret,
-          currency: data.currency,
-          country_code: data.country_code ?? "SG",
-          
+          intent_id: checkoutIntent.intentId,
+          client_secret: checkoutIntent.clientSecret,
+          currency: checkoutIntent.currency,
+          country_code: checkoutIntent.countryCode,
+          methods: ["card", "alipaycn", "pay_now"],
         });
-        
-        console.log(element);
-        element.on("success", async () => {
-          try {
-            const upgradeRes = await fetch("/api/checkout/sandbox-success", {
-              method: "POST",
-              headers: {
-                Authorization: `Bearer ${session.access_token}`,
-              },
-            });
 
-            const upgradeData = await upgradeRes.json();
-            if (!upgradeRes.ok) {
-              setError(upgradeData?.error || "Payment succeeded, but membership upgrade failed.");
-              return;
-            }
+        startStatusPolling(checkoutIntent.intentId, accessToken);
 
-            router.push("/member-portal");
-          } catch (upgradeError) {
-            console.error("Tier upgrade error:", upgradeError);
-            setError("Payment succeeded, but membership upgrade failed.");
-          }
+        element.on("clickConfirmButton", () => {
+          console.log("[Checkout] Confirm button clicked. Starting payment status polling.");
+          startStatusPolling(checkoutIntent.intentId, accessToken);
         });
-        
+
+        element.on("success", async (event) => {
+          console.log("[Checkout] Payment success event fired:", event.detail);
+          await handleCheckoutSuccess(accessToken);
+        });
+
         element.on("error", (err: unknown) => {
-          console.error("Airwallex payment error:", err);
-          setError("Payment failed. Please check your details and try again.");
+          handleCheckoutError("Payment failed. Please check your details and try again.", err);
         });
-        
-        // IMPORTANT: wait for DOM ref
-        if (dropinRef.current) {
-          element.mount(dropinRef.current);
-        } else {
-          throw new Error("Drop-in container not ready");
+
+        if (cardRef.current) {
+          element.mount(cardRef.current);
         }
 
 
@@ -145,7 +322,11 @@ function CheckoutContent() {
         setLoading(false);
       }
     })();
-  }, [billing, plan, planId, planInfo.cycle, router, searchParams]);
+
+    return () => {
+      stopStatusPolling();
+    };
+  }, [billing, plan, planId, planInfo.cycle, planInfo.plan, router, searchParams]);
 
   
   return (
@@ -169,25 +350,35 @@ function CheckoutContent() {
           <div className="px-6 py-5 border-b border-gray-100">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-semibold text-gray-900">{planInfo.label} Plan</p>
+                <p className="font-semibold text-gray-900">{planInfo.label} {planInfo.kind === "one-time" ? "Session" : "Plan"}</p>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  {planInfo.cycle === "annual" ? "Annual" : "Monthly"} subscription · auto-renews
+                  {planInfo.kind === "one-time"
+                    ? "One-time payment"
+                    : `${planInfo.cycle === "annual" ? "Annual" : "Monthly"} subscription · auto-renews`}
                 </p>
               </div>
               <div className="text-right">
                 <p className="text-xl font-bold text-gray-900">S${planInfo.price.toLocaleString()}</p>
-                <p className="text-xs text-gray-400">{planInfo.cycle === "annual" ? "/ year" : "/ month"}</p>
+                <p className="text-xs text-gray-400">{planInfo.kind === "one-time" ? "one-time" : planInfo.cycle === "annual" ? "/ year" : "/ month"}</p>
               </div>
             </div>
 
             <ul className="mt-4 space-y-1">
-              {[
-                "AI HR Chatbot (enhanced)",
-                "Full HR templates & SOPs library",
-                "Unlimited Compliance Scans",
-                "Video Insights Library",
-                "25% off consultancy services",
-              ].map((feat) => (
+              {(planInfo.plan === "expert-advisory"
+                ? [
+                    "In-depth HR strategy review",
+                    "Compliance audit",
+                    "Customized action plan",
+                    "Priority booking",
+                    "60-minute expert advisory session",
+                  ]
+                : [
+                    "AI HR Chatbot (enhanced)",
+                    "Full HR templates & SOPs library",
+                    "Unlimited Compliance Scans",
+                    "Video Insights Library",
+                    "25% off consultancy services",
+                  ]).map((feat) => (
                 <li key={feat} className="flex items-center gap-2 text-xs text-gray-600">
                   <span className="text-emerald-500">✓</span>
                   {feat}
@@ -229,9 +420,8 @@ function CheckoutContent() {
               </div>
             )}
 
-            {/* Airwallex DropIn element mounts here */}
-            {/* <div id="airwallex-dropin" className={loading ? "hidden" : ""} /> */}
-            <div ref={dropinRef} className={loading ? "hidden" : "min-h-[400px]"} />
+            {/* Airwallex dropIn — card + Alipay */}
+            <div ref={cardRef} className={loading ? "hidden" : "min-h-[400px]"} />
             
           </div>
         </div>

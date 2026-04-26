@@ -1,10 +1,9 @@
 ﻿"use client";
 
 export const dynamic = "force-dynamic";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase/client";
 import { useLang } from "@/lib/i18n";
 
 type Option = { text: string; score: number };
@@ -18,7 +17,7 @@ type Question = {
 
 // Scores only — text comes from locale
 const questionMeta = [
-  { id: 1, scores: [1, 1, 0] },
+  { id: 1, scores: [2, 1, 0] },
   { id: 2, scores: [0, 1, 2], criticalOverride: true },
   { id: 3, scores: [0, 1, 2], criticalOverride: true },
   { id: 4, scores: [0, 1, 2], criticalOverride: true },
@@ -83,13 +82,15 @@ const riskColors = {
   HIGH:   { color: "text-red-600",    bar: "bg-red-500",    border: "border-red-200",    bg: "bg-red-50"    },
 };
 
-const StepIndicator = ({ activeStep: _activeStep }: { activeStep: number }) => null;
+const StepIndicator = ({ activeStep }: { activeStep: number }) => {
+  void activeStep;
+  return null;
+};
 
 export default function ComplianceScanQuestionsPage() {
   const router = useRouter();
   const { t } = useLang();
   const qp = t.complianceScan.questionsPage;
-  const steps = t.complianceScan.steps;
 
   // Build questions from locale text + static scores
   const questions: Question[] = qp.questions.map((locQ, idx) => ({
@@ -105,17 +106,28 @@ export default function ComplianceScanQuestionsPage() {
   const [answers, setAnswers] = useState<AnswerRecord>({});
   const [processing, setProcessing] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [company, setCompany] = useState<{ name: string; company: string } | null>(null);
-  const printRef = useRef<HTMLDivElement>(null);
+  const company = useMemo<{ name?: string; company?: string } | null>(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
 
-  useEffect(() => {
     const raw = sessionStorage.getItem("cs_company");
     if (!raw) {
-      router.replace("/compliance-scan/company-details");
-      return;
+      return null;
     }
-    setCompany(JSON.parse(raw));
-  }, [router]);
+
+    try {
+      return JSON.parse(raw) as { name?: string; company?: string };
+    } catch {
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!company) {
+      router.replace("/compliance-scan/company-details");
+    }
+  }, [company, router]);
 
   const answered = Object.keys(answers).length;
   const allAnswered = answered === questions.length;
@@ -130,12 +142,14 @@ export default function ComplianceScanQuestionsPage() {
     const { totalScore, riskLevel, hasCriticalOverride } = calcResult(answers);
     const primaryRisk = getPrimaryRisk(answers, qp.mixedRisk, qp.generalCompliance);
     const alerts = getAlerts(answers, qp.momAlert, qp.cpfAlert, qp.tafepAlert);
+    const recommendations = qp.riskLevels[riskLevel]?.recommendations ?? [];
     const resultsPayload = {
       totalScore,
       riskLevel,
       hasCriticalOverride,
       primaryRisk,
       alerts,
+      recommendations,
       answers: Object.entries(answers).map(([qId, a]) => {
         const q2 = questions.find((q3) => q3.id === Number(qId));
         return {
@@ -151,7 +165,7 @@ export default function ComplianceScanQuestionsPage() {
     const raw = sessionStorage.getItem("cs_company");
     const companyData = raw ? JSON.parse(raw) : {};
 
-    var _form = {
+    const formPayload = {
       company_name: companyData.company ?? null,
       contact_name: companyData.name ?? null,
       business_email: companyData.email ?? null,
@@ -159,21 +173,23 @@ export default function ComplianceScanQuestionsPage() {
       industry: companyData.industry ?? null,
       employess: companyData.size ?? null,
       has_foreign_workers: companyData.foreignWorkers === true ? 1 : 0,
-      results: (resultsPayload),
-    }
+      results: resultsPayload,
+    };
 
     const res = await fetch("/api/compliance", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ..._form }),
+      body: JSON.stringify(formPayload),
     });
 
-    var data = await res.json();
-    if(res.ok){
+    if (res.ok) {
       setProcessing(false);
-        setSubmitted(true);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+      setSubmitted(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
     }
+
+    setProcessing(false);
      
     // supabase
     //   .from("compliance_scan")

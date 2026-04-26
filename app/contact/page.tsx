@@ -2,7 +2,6 @@
 
 export const dynamic = "force-dynamic";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useLang } from "@/lib/i18n";
 
 const industries = [
@@ -24,7 +23,6 @@ const servicesOfInterest = [
 ];
 
 export default function ContactPage() {
-  const router = useRouter();
   const { t } = useLang();
   const c = t.contact;
   const [form, setForm] = useState({
@@ -61,7 +59,7 @@ export default function ContactPage() {
       return;
     }
 
-    router.push("/consultation-success");
+    setSent(true);
   };
 
   return (

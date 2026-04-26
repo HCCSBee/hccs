@@ -15,7 +15,7 @@ export default function ConsultationSuccessClient() {
       <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5 text-sm text-emerald-900 mb-8 text-left space-y-2">
         <p>{cs.emailNote}</p>
         <p>{cs.phoneNote} <a href="tel:+6594362866" className="underline">+65 9436-2866</a></p>
-        <p>{cs.whatsappNote} <a href="https://wa.me/6565943628" className="underline" target="_blank" rel="noopener noreferrer">+65 6594-3628</a></p>
+        
       </div>
       <Link
         href="/"

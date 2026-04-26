@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 
 const RISK_COLORS = { LOW: "#16a34a", MEDIUM: "#d97706", HIGH: "#dc2626" };
@@ -295,6 +295,10 @@ function buildEmailHtml(body) {
 
 export async function POST(req) {
   const body = await req.json();
+  const results = body.results || {};
+  const answers = Array.isArray(results.answers) ? results.answers : [];
+  const alerts = Array.isArray(results.alerts) ? results.alerts : [];
+  const recommendations = Array.isArray(results.recommendations) ? results.recommendations : [];
 
   const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE;
@@ -305,40 +309,64 @@ export async function POST(req) {
 
   const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-  const { error } = await supabase.from("compliance_scan").insert({
-    company_name:       body.company_name       ?? null,
-    contact_name:       body.contact_name       ?? null,
-    business_email:     body.business_email     ?? null,
-    contact_number:     body.contact_number     ?? null,
-    industry:           body.industry           ?? null,
-    employess:          body.employess          ?? null,
-    has_foreign_workers: body.has_foreign_workers ?? 0,
-    results:            body.results,
-  });
+  const { data: scanRow, error: scanError } = await supabase
+    .from("compliance_scan")
+    .insert({
+      company_name: body.company_name ?? null,
+      contact_name: body.contact_name ?? null,
+      business_email: body.business_email ?? null,
+      contact_number: body.contact_number ?? null,
+      industry: body.industry ?? null,
+      employess: body.employess ?? null,
+      has_foreign_workers: body.has_foreign_workers ?? 0,
+      results: JSON.stringify(results),
+      total_score: Number.isFinite(results.totalScore) ? results.totalScore : null,
+      primary_risk: results.primaryRisk ?? null,
+      risk_level: results.riskLevel ?? null,
+      alert: JSON.stringify(alerts),
+      recommendation: JSON.stringify(recommendations),
+    })
+    .select("id")
+    .single();
 
-  if (error) {
-    console.error("Supabase error:", error.message);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  if (scanError) {
+    console.error("Supabase scan insert error:", scanError.message);
+    return NextResponse.json({ error: scanError.message }, { status: 500 });
   }
 
-  const EMAIL_ADDRESS = process.env.EMAIL_ADDRESS;
-  const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
+  if (answers.length > 0) {
+    const answerRows = answers
+      .filter((a) => Number.isFinite(a?.question_number))
+      .map((a) => ({
+        compliance_scan_question: a.question_number,
+        answer: a.selected ?? null,
+        compliance_scan_id: scanRow.id,
+      }));
 
-  if (EMAIL_ADDRESS && EMAIL_PASSWORD && body.business_email) {
+    if (answerRows.length > 0) {
+      const { error: answerError } = await supabase
+        .from("compliance_answer")
+        .insert(answerRows);
+
+      if (answerError) {
+        console.error("Supabase answer insert error:", answerError.message);
+        return NextResponse.json({ error: answerError.message }, { status: 500 });
+      }
+    }
+  }
+
+  const resendApiKey = process.env.RESEND_API_KEY?.trim();
+  const resendFrom = "mail@hccs.sg";
+
+  if (resendApiKey && body.business_email) {
     try {
+      const resend = new Resend(resendApiKey);
       const pdfBuffer = await generateCompliancePDF(body);
       const html = buildEmailHtml(body);
 
-      const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        auth: { user: EMAIL_ADDRESS, pass: EMAIL_PASSWORD },
-      });
-
-      await transporter.sendMail({
-        from: `"HCCS" <${EMAIL_ADDRESS}>`,
-        to: [body.business_email, 'yewyang@cysoft.co', 'enquiry@hccs.sg'].filter(Boolean).join(','),
+      await resend.emails.send({
+        from: `HCCS <${resendFrom}>`,
+        to: [body.business_email, "yewyang@cysoft.co","beebee@hccs.sg", "enquiry@hccs.sg"].filter(Boolean),
         subject: "Your HCCS HR Compliance Scan Report",
         text: `Hi ${body.contact_name || "there"},\n\nThank you for completing the HCCS HR Compliance Scan.\n\nRisk Level: ${body.results?.riskLevel || "N/A"}\nTotal Score: ${body.results?.totalScore ?? 0}\nPrimary Risk: ${body.results?.primaryRisk || "N/A"}\n\nYour full report is attached as a PDF.\n\nTo book a free expert review, visit: https://hccs.sg/consultation\n\nHCCS Team`,
         html,
@@ -346,7 +374,6 @@ export async function POST(req) {
           {
             filename: "HCCS-Compliance-Report.pdf",
             content: pdfBuffer,
-            contentType: "application/pdf",
           },
         ],
       });
