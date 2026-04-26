@@ -7,7 +7,7 @@ import { useLang } from "@/lib/i18n";
 export default function MembershipClient() {
   const { t } = useLang();
   const m = t.membership;
-  const [billing, setBilling] = useState<"monthly" | "annually">("monthly");
+  const [billing, setBilling] = useState<"monthly" | "annually">("annually");
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-16">

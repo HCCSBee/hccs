@@ -67,6 +67,7 @@ export default function AIHROverlayTrigger() {
                                         <p className="text-white/60 text-xs md:text-sm mb-4">Live Assistant</p>
                                         <div className="flex-1 rounded-2xl overflow-hidden bg-white/5 border border-white/10">
                                             <iframe
+                                                allow="microphone"
                                                 src="https://www.chatbase.co/chatbot-iframe/V5_sne4WDBbABvwxyLpl3"
                                                 width="100%"
                                                 style={{ height: "100%" }}
@@ -88,6 +89,7 @@ export default function AIHROverlayTrigger() {
                                         <h3 className="text-xl md:text-2xl font-bold text-white mb-1">AIHR Essential</h3>
                                         <div className="flex-1 rounded-2xl overflow-hidden bg-white/5 border border-white/10 mb-4">
                                             <iframe
+                                                allow="microphone"
                                                 src="https://www.chatbase.co/chatbot-iframe/X9oUsKqo6TCzrGIhDtUMY"
                                                 width="100%"
                                                 style={{ height: "100%", }}
