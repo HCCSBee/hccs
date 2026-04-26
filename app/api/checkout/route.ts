@@ -2,21 +2,97 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { createClient } from "@supabase/supabase-js";
 
-const PLANS: Record<
-  string,
-  { name: string; amount: number; currency: string; description: string }
-> = {
-  essential: {
+type BillingCycle = "monthly" | "annual";
+type PlanConfig = {
+  id: number;
+  plan: string;
+  name: string;
+  amount: number;
+  currency: string;
+  description: string;
+  cycle: BillingCycle;
+  descriptor: string;
+};
+
+const PLAN_ROWS_BY_ID: Record<number, PlanConfig> = {
+  1: {
+    id: 1,
+    plan: "essential",
+    name: "HCCS Essential Plan",
+    amount: 499,
+    currency: "SGD",
+    description: "HCCS AIHR Essential Plan - Monthly Subscription",
+    cycle: "monthly",
+    descriptor: "Essential Monthly",
+  },
+  2: {
+    id: 2,
+    plan: "essential",
     name: "HCCS Essential Plan",
     amount: 5988,
     currency: "SGD",
-    description: "HCCS AIHR Essential Plan – Annual Subscription",
+    description: "HCCS AIHR Essential Plan - Annual Subscription",
+    cycle: "annual",
+    descriptor: "Essential Annual",
+  },
+  3: {
+    id: 3,
+    plan: "professional",
+    name: "HCCS Professional Plan",
+    amount: 999,
+    currency: "SGD",
+    description: "HCCS AIHR Professional Plan - Monthly Subscription",
+    cycle: "monthly",
+    descriptor: "Professional Monthly",
+  },
+  4: {
+    id: 4,
+    plan: "professional",
+    name: "HCCS Professional Plan",
+    amount: 11988,
+    currency: "SGD",
+    description: "HCCS AIHR Professional Plan - Annual Subscription",
+    cycle: "annual",
+    descriptor: "Professional Annual",
+  },
+  5: {
+    id: 5,
+    plan: "strategic",
+    name: "HCCS Strategic Plan",
+    amount: 1499,
+    currency: "SGD",
+    description: "HCCS AIHR Strategic Plan - Monthly Subscription",
+    cycle: "monthly",
+    descriptor: "Strategic Monthly",
+  },
+  6: {
+    id: 6,
+    plan: "strategic",
+    name: "HCCS Strategic Plan",
+    amount: 17988,
+    currency: "SGD",
+    description: "HCCS AIHR Strategic Plan - Annual Subscription",
+    cycle: "annual",
+    descriptor: "Strategic Annual",
+  },
+  7: {
+    id: 7,
+    plan: "essential-bundle",
+    name: "HCCS Essential Bundle",
+    amount: 997,
+    currency: "SGD",
+    description: "HCCS AIHR Essential Bundle - 3-Month Intro Offer",
+    cycle: "monthly",
+    descriptor: "Essential Bundle",
   },
 };
 
-function toAirwallexDescriptor(): string {
-  return "Essential";
-}
+const DEFAULT_PLAN_ID_BY_KEY: Record<string, Record<BillingCycle, number>> = {
+  essential: { monthly: 1, annual: 2 },
+  professional: { monthly: 3, annual: 4 },
+  strategic: { monthly: 5, annual: 6 },
+  "essential-bundle": { monthly: 7, annual: 7 },
+};
 
 function toShopperCountryCode(input: unknown): string {
   const value = typeof input === "string" ? input.trim().toUpperCase() : "";
@@ -96,8 +172,16 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const plan = typeof body?.plan === "string" ? body.plan : "";
+    const billingCycle: BillingCycle = body?.billing_cycle === "monthly" ? "monthly" : "annual";
+    const requestedPlanId = Number(body?.planId ?? body?.plan_id ?? "");
     const countryCode = toShopperCountryCode(body?.country_code);
-    const planConfig = PLANS[plan];
+
+    const fallbackPlanId = DEFAULT_PLAN_ID_BY_KEY[plan]?.[billingCycle];
+    const selectedPlanId =
+      Number.isFinite(requestedPlanId) && PLAN_ROWS_BY_ID[requestedPlanId]
+        ? requestedPlanId
+        : fallbackPlanId;
+    const planConfig = selectedPlanId ? PLAN_ROWS_BY_ID[selectedPlanId] : undefined;
 
     if (!planConfig) {
       return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
@@ -123,7 +207,7 @@ export async function POST(req: NextRequest) {
           merchant_order_id: randomUUID(),
           amount: planConfig.amount,
           currency: planConfig.currency,
-          descriptor: toAirwallexDescriptor(),
+          descriptor: planConfig.descriptor,
           payment_method_types: ["card", "paynow", "alipay"],
           order: {
             products: [
@@ -153,9 +237,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       intent_id: intent.id as string,
       client_secret: intent.client_secret as string,
+      plan_id: planConfig.id,
       amount: planConfig.amount,
       currency: planConfig.currency,
       plan_name: planConfig.name,
+      billing_cycle: planConfig.cycle,
       country_code: countryCode,
     });
   } catch (err) {

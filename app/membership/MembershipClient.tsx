@@ -4,6 +4,45 @@ import Link from "next/link";
 import { useState } from "react";
 import { useLang } from "@/lib/i18n";
 
+type BillingCycle = "monthly" | "annual";
+type PlanKey = "essential" | "professional" | "strategic" | "essential-bundle";
+
+const SUBSCRIPTION_PLAN_ROWS: Record<PlanKey, Partial<Record<BillingCycle, { id: number; price: number }>>> = {
+  essential: {
+    monthly: { id: 1, price: 499 },
+    annual: { id: 2, price: 5988 },
+  },
+  professional: {
+    monthly: { id: 3, price: 999 },
+    annual: { id: 4, price: 11988 },
+  },
+  strategic: {
+    monthly: { id: 5, price: 1499 },
+    annual: { id: 6, price: 17988 },
+  },
+  "essential-bundle": {
+    monthly: { id: 7, price: 997 },
+  },
+};
+
+function formatCurrency(value: number): string {
+  return `S$${value.toLocaleString()}`;
+}
+
+function extractPlanKey(href: string): PlanKey | null {
+  const query = href.includes("?") ? href.split("?")[1] : "";
+  const plan = new URLSearchParams(query).get("plan");
+  if (
+    plan === "essential" ||
+    plan === "professional" ||
+    plan === "strategic" ||
+    plan === "essential-bundle"
+  ) {
+    return plan;
+  }
+  return null;
+}
+
 export default function MembershipClient() {
   const { t } = useLang();
   const m = t.membership;
@@ -41,7 +80,12 @@ export default function MembershipClient() {
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {m.plans.map((plan) => {
-          const isHighlight = plan.name === "Essential";
+          const planKey = extractPlanKey(plan.href);
+          const isHighlight = planKey === "essential";
+
+          const cycleKey: BillingCycle = billing === "annually" ? "annual" : "monthly";
+          const csvPrice = planKey ? SUBSCRIPTION_PLAN_ROWS[planKey]?.[cycleKey]?.price : undefined;
+          const csvPlanId = planKey ? SUBSCRIPTION_PLAN_ROWS[planKey]?.[cycleKey]?.id : undefined;
 
           // plan.price is the annual price (e.g. "S$5,988")
           const rawPrice = plan.price.replace(/[^0-9.]/g, "");
@@ -51,6 +95,8 @@ export default function MembershipClient() {
           const isFree = plan.price === "S$0" || plan.price === "Free";
           const displayPrice = isFree
             ? "Free"
+            : csvPrice !== undefined
+            ? formatCurrency(csvPrice)
             : billing === "annually"
             ? plan.price
             : monthlyNum !== null
@@ -61,6 +107,11 @@ export default function MembershipClient() {
             : billing === "annually"
             ? "/ year"
             : "/ month";
+
+          const checkoutHref =
+            plan.href.startsWith("/checkout") && planKey && csvPlanId
+              ? `/checkout?plan=${planKey}&planId=${csvPlanId}&billing=${cycleKey}`
+              : plan.href;
 
           return (
             <div
@@ -94,7 +145,7 @@ export default function MembershipClient() {
                 ))}
               </ul>
               <Link
-                href={plan.href}
+                href={checkoutHref}
                 className={`text-center py-2 rounded-lg font-semibold text-sm transition-colors ${
                   isHighlight
                     ? "bg-emerald-600 text-white hover:bg-emerald-700"
@@ -110,12 +161,14 @@ export default function MembershipClient() {
 
       {/* Essential 3-Month Bundle — separate package */}
       {(() => {
-        const essentialPlan = m.plans.find((p) => p.name === "Essential");
+        const essentialPlan = m.plans.find((p) => extractPlanKey(p.href) === "essential");
         if (!essentialPlan) return null;
-        const annualNum = parseFloat(essentialPlan.price.replace(/[^0-9.]/g, ""));
-        const monthlyNum = isNaN(annualNum) ? 0 : Math.round(annualNum / 12);
-        const bundleOriginal = monthlyNum * 3;
-        const bundlePrice = bundleOriginal - 500;
+
+        const essentialMonthly = SUBSCRIPTION_PLAN_ROWS.essential.monthly?.price ?? 499;
+        const bundleId = SUBSCRIPTION_PLAN_ROWS["essential-bundle"].monthly?.id ?? 7;
+        const bundlePrice = SUBSCRIPTION_PLAN_ROWS["essential-bundle"].monthly?.price ?? 997;
+        const bundleOriginal = essentialMonthly * 3;
+        const bundleSavings = bundleOriginal - bundlePrice;
         return (
           <div className="mb-16 rounded-2xl border-2 border-amber-400 bg-gradient-to-r from-amber-50 to-yellow-50 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <div className="flex-1">
@@ -141,10 +194,10 @@ export default function MembershipClient() {
               <div className="text-right">
                 <p className="text-xs text-gray-500 line-through">S${bundleOriginal.toLocaleString()} for 3 months</p>
                 <p className="text-3xl font-extrabold text-amber-700">S${bundlePrice.toLocaleString()}</p>
-                <p className="text-xs text-amber-600 font-semibold">Save S$500</p>
+                <p className="text-xs text-amber-600 font-semibold">Save S${bundleSavings.toLocaleString()}</p>
               </div>
               <Link
-                href="/checkout?plan=essential-bundle"
+                href={`/checkout?plan=essential-bundle&planId=${bundleId}&billing=monthly`}
                 className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-colors whitespace-nowrap"
               >
                 Claim Bundle

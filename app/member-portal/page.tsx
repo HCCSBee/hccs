@@ -16,14 +16,18 @@ const videoLibrary = [
   { title: "Building a Performance Management System", duration: "28 min", tier: "Strategic", locked: true },
 ];
 
+const DEMO_ALERT_USER_ID = "31f17772-a37b-4d8b-8385-3bf7478fb489";
+
 export default function MemberPortalPage() {
   const { t } = useLang();
   const mp = t.memberPortal;
   const router = useRouter();
   const [authChecked, setAuthChecked] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [chatbaseId, setChatbaseId] = useState<string | null>(null);
   const [userTierName, setUserTierName] = useState("Essential");
+  const showDemoAiAlert = userId === DEMO_ALERT_USER_ID;
 
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
@@ -32,6 +36,7 @@ export default function MemberPortalPage() {
         return;
       }
 
+      setUserId(session.user.id);
       setUserEmail(session.user.email ?? null);
 
       const res = await fetch("/api/member/chatbase", {
@@ -126,6 +131,36 @@ export default function MemberPortalPage() {
               Upgrade to Professional →
             </Link>
           </div>
+
+          {showDemoAiAlert && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
+              <div className="bg-red-600 text-white rounded-lg px-3 py-2 mb-3">
+                <h3 className="font-semibold">AI Alert</h3>
+                <p className="text-xs uppercase tracking-wide text-red-100">Information</p>
+              </div>
+              <p className="text-sm font-medium text-gray-900">Accounting and Corporate Regulatory Authority</p>
+              <p className="text-sm text-gray-700 mt-1">
+                Companies and Limited Liability Partnerships (Miscellaneous Amendments) Act 2024 | Accounting and Corporate Regulatory Authority
+              </p>
+              <a
+                href="https://www.acra.gov.sg/regulations/legislation/amendment-acts/cllpma-act"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-2 block text-xs text-emerald-700 underline break-all"
+              >
+                https://www.acra.gov.sg/regulations/legislation/amendment-acts/cllpma-act
+              </a>
+              <p className="text-sm text-gray-700 mt-3">
+                Our AI alert indicates your company might be impacted by recent government policy changes. You should book a consultation for a compliance review.
+              </p>
+              <Link
+                href="/consultation"
+                className="mt-3 inline-block text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 px-3 py-2 rounded-lg"
+              >
+                Book Consultation
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 

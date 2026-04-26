@@ -6,9 +6,23 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase/client";
 
+type BillingCycle = "monthly" | "annual";
 
-const PLAN_DISPLAY: Record<string, { label: string; price: string; period: string }> = {
-  essential: { label: "Essential", price: "S$5,988", period: "/ year" },
+const PLAN_ROWS_BY_ID: Record<number, { plan: string; label: string; price: number; cycle: BillingCycle }> = {
+  1: { plan: "essential", label: "Essential", price: 499, cycle: "monthly" },
+  2: { plan: "essential", label: "Essential", price: 5988, cycle: "annual" },
+  3: { plan: "professional", label: "Professional", price: 999, cycle: "monthly" },
+  4: { plan: "professional", label: "Professional", price: 11988, cycle: "annual" },
+  5: { plan: "strategic", label: "Strategic", price: 1499, cycle: "monthly" },
+  6: { plan: "strategic", label: "Strategic", price: 17988, cycle: "annual" },
+  7: { plan: "essential-bundle", label: "Essential Bundle", price: 997, cycle: "monthly" },
+};
+
+const DEFAULT_PLAN_ID_BY_KEY: Record<string, Record<BillingCycle, number>> = {
+  essential: { monthly: 1, annual: 2 },
+  professional: { monthly: 3, annual: 4 },
+  strategic: { monthly: 5, annual: 6 },
+  "essential-bundle": { monthly: 7, annual: 7 },
 };
 
 function toAirwallexClientEnv(env?: string): "demo" | "prod" {
@@ -20,7 +34,11 @@ function CheckoutContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const plan = searchParams.get("plan") ?? "essential";
-  const planInfo = PLAN_DISPLAY[plan] ?? PLAN_DISPLAY["essential"];
+  const billing = searchParams.get("billing") === "monthly" ? "monthly" : "annual";
+  const planIdParam = Number(searchParams.get("planId") || "");
+  const fallbackPlanId = DEFAULT_PLAN_ID_BY_KEY[plan]?.[billing] ?? DEFAULT_PLAN_ID_BY_KEY.essential.annual;
+  const planId = Number.isFinite(planIdParam) && PLAN_ROWS_BY_ID[planIdParam] ? planIdParam : fallbackPlanId;
+  const planInfo = PLAN_ROWS_BY_ID[planId] ?? PLAN_ROWS_BY_ID[2];
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,8 +53,10 @@ function CheckoutContent() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
 
+        const currentCheckoutPath = `/checkout?${searchParams.toString()}`;
+
         if (!session) {
-          router.replace(`/login?mode=signin&next=${encodeURIComponent(`/checkout?plan=${plan}`)}`);
+          router.replace(`/login?mode=signin&next=${encodeURIComponent(currentCheckoutPath)}`);
           return;
         }
 
@@ -48,12 +68,12 @@ function CheckoutContent() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session.access_token}`,
           },
-          body: JSON.stringify({ plan }),
+          body: JSON.stringify({ plan, planId, billing_cycle: planInfo.cycle }),
         });
         const data = await res.json();
 
         if (res.status === 401) {
-          router.replace(`/login?mode=signin&next=${encodeURIComponent(`/checkout?plan=${plan}`)}`);
+          router.replace(`/login?mode=signin&next=${encodeURIComponent(currentCheckoutPath)}`);
           return;
         }
 
@@ -125,7 +145,7 @@ function CheckoutContent() {
         setLoading(false);
       }
     })();
-  }, [plan, router]);
+  }, [billing, plan, planId, planInfo.cycle, router, searchParams]);
 
   
   return (
@@ -150,11 +170,13 @@ function CheckoutContent() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-semibold text-gray-900">{planInfo.label} Plan</p>
-                <p className="text-xs text-gray-500 mt-0.5">Annual subscription · auto-renews</p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {planInfo.cycle === "annual" ? "Annual" : "Monthly"} subscription · auto-renews
+                </p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-gray-900">{planInfo.price}</p>
-                <p className="text-xs text-gray-400">{planInfo.period}</p>
+                <p className="text-xl font-bold text-gray-900">S${planInfo.price.toLocaleString()}</p>
+                <p className="text-xs text-gray-400">{planInfo.cycle === "annual" ? "/ year" : "/ month"}</p>
               </div>
             </div>
 
