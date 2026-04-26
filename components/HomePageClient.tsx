@@ -220,7 +220,7 @@ export default function HomePageClient({
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
                                     src={i === 0 ? "/images/new_hero.png" : "https://p16-common-sign.tiktokcdn.com/tos-alisg-i-photomode-sg/577d53a5ec9142e38d397d209dd55e5e~tplv-photomode-image.jpeg?dr=14555&x-expires=1776985200&x-signature=HWPGsz0xIQ%2BED89i0b4OJtVxnKY%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=9b759fb9&idc=my3&ftpl=1"}
-                                    alt={item.alt}
+                                    
                                     className="w-full h-72 object-cover"
                                 />
                                 <div className="p-6">

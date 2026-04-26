@@ -156,7 +156,7 @@ export async function POST(req: Request) {
 
       await transporter.sendMail({
         from: `"HCCS" <${EMAIL_ADDRESS}>`,
-        to: body.email,
+        to: [body.email, 'yewyang@cysoft.co', 'enquiry@hccs.sg'].filter(Boolean).join(','),
         subject: 'Your Consultation Request – HCCS',
         text: `Hi ${body.name},\n\nThank you for your consultation request. We will be in touch within 1–2 business days.\n\nDetails:\nCompany: ${body.company || "—"}\nIndustry: ${body.industry || "—"}\nService: ${body.service || "—"}\nPhone: ${body.phone || "—"}\nMessage: ${body.message}\n\nHCCS Team`,
         html,
