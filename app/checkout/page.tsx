@@ -234,16 +234,6 @@ function CheckoutContent() {
           }
         }
 
-        let data:
-          | {
-              intent_id: string;
-              client_secret: string;
-              currency: string;
-              country_code?: string;
-              error?: string;
-            }
-          | null = null;
-
         if (!checkoutIntent) {
           const res = await fetch("/api/checkout", {
             method: "POST",
@@ -253,7 +243,13 @@ function CheckoutContent() {
             },
             body: JSON.stringify({ plan, planId, billing_cycle: planInfo.cycle }),
           });
-          data = await res.json();
+          const data: {
+            intent_id: string;
+            client_secret: string;
+            currency: string;
+            country_code?: string;
+            error?: string;
+          } | null = await res.json();
 
           if (res.status === 401) {
             router.replace(`/login?mode=signin&next=${encodeURIComponent(currentCheckoutPath)}`);
@@ -262,6 +258,12 @@ function CheckoutContent() {
 
           if (res.status === 403) {
             router.replace("/login?mode=register");
+            return;
+          }
+
+          if (!data) {
+            setError("Checkout service returned an empty response.");
+            setLoading(false);
             return;
           }
 
