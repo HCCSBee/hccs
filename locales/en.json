@@ -195,10 +195,10 @@
             }
         ],
         "advantagePoints": [
-            "MOM-registered HR consultancy with practical, on-the-ground Singapore market experience.",
-            "End-to-end support from business setup and immigration to compliance and daily HR operations.",
-            "AI-powered HR services and membership options for faster response and stronger execution.",
-            "Bilingual support and advisory that balances business speed with legal and regulatory discipline."
+            "Converts HR compliance and advisory into scalable, monetisable solutions for business growth.",
+            "Reduces execution and regulatory risk for partners and investors via meticulous audit-ready systems.",
+            "Strengthens credibility with regulators, associations, and enterprise clients through precise execution.",
+            "Positions AI-HR as a cost-saving, trust-building backbone, not a replacement for human judgment."
         ]
     },
     "services": {
@@ -577,11 +577,10 @@
                 "period": "forever",
                 "target": "Individuals exploring HR basics",
                 "features": [
-                    "AI HR Chatbot (basic queries)",
-                    "3 downloadable HR templates",
-                    "1 Compliance Scan (one-time)",
-                    "Access to HR news feed",
-                    "Community forum access"
+                    "AI HR Chatbot (basic knowledge base)",
+                    "Limited resource access",
+                    "Free HR Compliance Risk Scan (one-time)",
+                    "Access to public news & insights"
                 ],
                 "cta": "Get Started Free",
                 "href": "/member-portal"
@@ -592,13 +591,14 @@
                 "period": "/ year (Year 1 promo)",
                 "target": "SMEs needing compliance support",
                 "features": [
-                    "AI HR Chatbot (enhanced)",
-                    "Full HR templates & SOPs library",
-                    "Unlimited Compliance Scans",
-                    "Video Insights Library",
-                    "25% off consultancy services",
-                    "Priority consultation booking",
-                    "Government training grant access"
+                    "AI HR Chatbot (enhanced knowledge base)",
+                    "Explanded resource library - templates, SOPs, compliance guides",
+                    "Full video insights library unlocked",
+                    "Prioirty consultation booking",
+                    "20% off HCCS consultancy fees",
+                    "15% off Virtual Classroom classes",
+                    "1 annual HR Compliance Audit (light diagnostic)",
+                    "Member-only premium insights & updates"
                 ],
                 "cta": "Get Essential",
                 "href": "/checkout?plan=essential"
@@ -610,12 +610,13 @@
                 "target": "Growing businesses",
                 "features": [
                     "Everything in Essential",
-                    "Advanced AI HR Chatbot",
-                    "Multi-user team access (up to 5)",
-                    "30% off consultancy services",
-                    "Monthly HR regulatory briefings",
-                    "Dedicated onboarding session",
-                    "Priority support"
+                    "AIHR Pro + chatbot - advanced responses & knowledge base",
+                    "Full premium resource vault",
+                    "Full video library + early access to new content",
+                    "Higher consultation priority (above Essential)",
+                    "25% off Virtual Classroom classes",
+                    "2 HR audits / compliance reviews per year",
+                    "Premium templates, SOPs & policy packs"
                 ],
                 "cta": "Contact for Pricing",
                 "href": "/contact"
@@ -627,12 +628,14 @@
                 "target": "Enterprise HR teams",
                 "features": [
                     "Everything in Professional",
-                    "Unlimited team users",
-                    "Custom AI HR Chatbot training",
-                    "Dedicated HCCS Account Manager",
-                    "Quarterly HR strategy reviews",
-                    "Exclusive webinars & workshops",
-                    "Custom compliance reporting"
+                    "AIHR Strategic chatbot — widest knowledge base, best performance",
+                    "Full access to all resources & premium tools",
+                    "Full video library + early access to all new content",
+                    "Highest consultation priority (fastest response)",
+                    "35% off Virtual Classroom classes",
+                    "HR Compliance Audit every 6 months",
+                    "Team / organisation access (multi-user portal)",
+                    "Dedicated onboarding & activation session"
                 ],
                 "cta": "Contact for Pricing",
                 "href": "/contact"
