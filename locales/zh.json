@@ -319,6 +319,28 @@
     "consultation": {
         "title": "预约免费咨询",
         "subtitle": "填写以下表格，我们的团队将在1个工作日内联系您确认预约。",
+        "freeTag": "免费入门咨询",
+        "freeTitle": "免费咨询",
+        "freeDuration": "30分钟",
+        "freeFeatures": [
+            "初步人力资源评估",
+            "服务建议",
+            "无需任何承诺",
+            "视频会议进行"
+        ],
+        "freeCta": "预约免费时段 ↗",
+        "expertTag": "最受欢迎",
+        "expertLabel": "高级顾问服务",
+        "expertTitle": "专家顾问咨询",
+        "expertPrice": "S$1500",
+        "expertDuration": "60分钟",
+        "expertFeatures": [
+            "深入人力资源策略评估",
+            "合规审查",
+            "定制行动方案",
+            "优先预约"
+        ],
+        "expertCta": "前往结账（专家顾问）→",
         "fullName": "全名 *",
         "namePlaceholder": "您的全名",
         "companyName": "公司名称",

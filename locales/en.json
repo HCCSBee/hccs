@@ -319,6 +319,28 @@
     "consultation": {
         "title": "Book a Free Consultation",
         "subtitle": "Fill in the form below and our team will reach out within 1 business day to confirm your appointment.",
+        "freeTag": "Free Introductory",
+        "freeTitle": "Free Consultation",
+        "freeDuration": "30 minutes",
+        "freeFeatures": [
+            "Initial HR assessment",
+            "Service recommendations",
+            "No commitment required",
+            "Via video call"
+        ],
+        "freeCta": "Book Free Session ↗",
+        "expertTag": "Most Popular",
+        "expertLabel": "Premium Advisory",
+        "expertTitle": "Expert Advisory",
+        "expertPrice": "S$1500",
+        "expertDuration": "60 minutes",
+        "expertFeatures": [
+            "In-depth HR strategy review",
+            "Compliance audit",
+            "Customized action plan",
+            "Priority booking"
+        ],
+        "expertCta": "Checkout Expert Advisory →",
         "fullName": "Full Name *",
         "namePlaceholder": "Your full name",
         "companyName": "Company Name",
