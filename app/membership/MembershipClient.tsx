@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useLang } from "@/lib/i18n";
 
 type BillingCycle = "monthly" | "annual";
-type PlanKey = "essential" | "professional" | "strategic" | "essential-bundle";
+type PlanKey = "essential" | "professional" | "strategic";
 
 const SUBSCRIPTION_PLAN_ROWS: Record<PlanKey, Partial<Record<BillingCycle, { id: number; price: number }>>> = {
   essential: {
@@ -20,9 +20,6 @@ const SUBSCRIPTION_PLAN_ROWS: Record<PlanKey, Partial<Record<BillingCycle, { id:
     monthly: { id: 5, price: 1499 },
     annual: { id: 6, price: 17988 },
   },
-  "essential-bundle": {
-    monthly: { id: 7, price: 997 },
-  },
 };
 
 function formatCurrency(value: number): string {
@@ -35,8 +32,7 @@ function extractPlanKey(href: string): PlanKey | null {
   if (
     plan === "essential" ||
     plan === "professional" ||
-    plan === "strategic" ||
-    plan === "essential-bundle"
+    plan === "strategic"
   ) {
     return plan;
   }
@@ -159,48 +155,64 @@ export default function MembershipClient() {
         })}
       </section>
 
-      {/* Essential 3-Month Bundle — separate package */}
+      {/* Essential promotional offer — context-sensitive per billing cycle */}
       {(() => {
-        const essentialPlan = m.plans.find((p) => extractPlanKey(p.href) === "essential");
-        if (!essentialPlan) return null;
-
-        const essentialMonthly = SUBSCRIPTION_PLAN_ROWS.essential.monthly?.price ?? 499;
-        const bundleId = SUBSCRIPTION_PLAN_ROWS["essential-bundle"].monthly?.id ?? 7;
-        const bundlePrice = SUBSCRIPTION_PLAN_ROWS["essential-bundle"].monthly?.price ?? 997;
-        const bundleOriginal = essentialMonthly * 3;
-        const bundleSavings = bundleOriginal - bundlePrice;
+        const promo = m.promo;
+        const monthlyPromoId = 7;
+        const annualEssentialId = SUBSCRIPTION_PLAN_ROWS.essential.annual?.id;
+        if (billing === "monthly") {
+          return (
+            <div className="mb-16 rounded-2xl border-2 border-amber-400 bg-gradient-to-r from-amber-50 to-yellow-50 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-bold text-amber-800 bg-amber-200 rounded-full px-3 py-1">
+                    {promo.monthlyBadge}
+                  </span>
+                  <span className="text-xs text-amber-700 font-medium">{promo.monthlyLabel}</span>
+                </div>
+                <h3 className="text-xl font-extrabold text-gray-900 mb-1">{promo.monthlyTitle}</h3>
+                <p className="text-sm text-gray-600 max-w-lg">{promo.monthlyDesc}</p>
+              </div>
+              <div className="flex flex-col items-center sm:items-end gap-3 flex-shrink-0">
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">{promo.monthlyThen}</p>
+                  <p className="text-3xl font-extrabold text-amber-700">S$199<span className="text-base font-semibold">/mo</span></p>
+                  <p className="text-xs text-amber-600 font-semibold">{promo.monthlySavings}</p>
+                </div>
+                <Link
+                  href={`/checkout?plan=essential&planId=${monthlyPromoId}&billing=monthly&promo=intro3`}
+                  className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-colors whitespace-nowrap"
+                >
+                  {promo.monthlyCta}
+                </Link>
+              </div>
+            </div>
+          );
+        }
+        // Annual billing
         return (
-          <div className="mb-16 rounded-2xl border-2 border-amber-400 bg-gradient-to-r from-amber-50 to-yellow-50 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <div className="mb-16 rounded-2xl border-2 border-emerald-400 bg-gradient-to-r from-emerald-50 to-teal-50 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold text-amber-800 bg-amber-200 rounded-full px-3 py-1">
-                  Limited Offer
+                <span className="text-xs font-bold text-emerald-800 bg-emerald-200 rounded-full px-3 py-1">
+                  {promo.annualBadge}
                 </span>
-                <span className="text-xs text-amber-700 font-medium">Essential Plan</span>
+                <span className="text-xs text-emerald-700 font-medium">{promo.annualLabel}</span>
               </div>
-              <h3 className="text-xl font-extrabold text-gray-900 mb-1">3-Month Starter Bundle</h3>
-              <p className="text-sm text-gray-600 max-w-lg">
-                Try out the Essential plan for 3 months at a special introductory rate. All Essential features included — no long-term commitment required.
-              </p>
-              <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
-                {essentialPlan.features.slice(0, 4).map((f) => (
-                  <li key={f} className="flex items-center gap-1 text-xs text-gray-600">
-                    <span className="text-emerald-500">✓</span> {f}
-                  </li>
-                ))}
-              </ul>
+              <h3 className="text-xl font-extrabold text-gray-900 mb-1">{promo.annualTitle}</h3>
+              <p className="text-sm text-gray-600 max-w-lg">{promo.annualDesc}</p>
             </div>
             <div className="flex flex-col items-center sm:items-end gap-3 flex-shrink-0">
               <div className="text-right">
-                <p className="text-xs text-gray-500 line-through">S${bundleOriginal.toLocaleString()} for 3 months</p>
-                <p className="text-3xl font-extrabold text-amber-700">S${bundlePrice.toLocaleString()}</p>
-                <p className="text-xs text-amber-600 font-semibold">Save S${bundleSavings.toLocaleString()}</p>
+                <p className="text-xs text-gray-500">{promo.annualPlanLabel}</p>
+                <p className="text-3xl font-extrabold text-emerald-700">{promo.annualHighlight}</p>
+                <p className="text-xs text-emerald-600 font-semibold">{promo.annualSubtitle}</p>
               </div>
               <Link
-                href={`/checkout?plan=essential-bundle&planId=${bundleId}&billing=monthly`}
-                className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-colors whitespace-nowrap"
+                href={`/checkout?plan=essential&planId=${annualEssentialId}&billing=annual&promo=free3`}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition-colors whitespace-nowrap"
               >
-                Claim Bundle
+                {promo.annualCta}
               </Link>
             </div>
           </div>

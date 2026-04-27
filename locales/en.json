@@ -570,6 +570,23 @@
         "desc": "Access AI-powered HR tools, premium templates, compliance scans, and exclusive consultancy discounts — designed for Singapore businesses.",
         "mostPopular": "Most Popular",
         "faqTitle": "Frequently Asked Questions",
+        "promo": {
+            "monthlyBadge": "Limited Offer",
+            "monthlyLabel": "Essential Plan",
+            "monthlyTitle": "First 3 Months at S$199/month",
+            "monthlyDesc": "Billed monthly — S$199/month for months 1–3, then S$499/month from month 4 onwards.",
+            "monthlyThen": "Then S$499/month",
+            "monthlySavings": "Save S$900 in the first 3 months",
+            "monthlyCta": "Claim Offer",
+            "annualBadge": "Best Value",
+            "annualLabel": "Essential Plan",
+            "annualTitle": "Get 3 Extra Months Free",
+            "annualDesc": "Subscribe annually and get 15 months of Essential access for the price of 12 — that's 3 months completely free.",
+            "annualPlanLabel": "12-month plan",
+            "annualHighlight": "3 Months Free",
+            "annualSubtitle": "15 months for the price of 12",
+            "annualCta": "Claim Offer"
+        },
         "plans": [
             {
                 "name": "Free",

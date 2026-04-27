@@ -53,7 +53,7 @@ export default function AIHROverlayTrigger() {
                             <div className="w-full max-w-[1600px]">
                                 <div className="text-center mb-12">
                                     <h2 className="text-3xl md:text-5xl font-bold text-white mb-3">Try AIHR - Your AI-Powered HR Assistant</h2>
-                                    <p className="text-white/70 text-base md:text-lg">
+                                    <p className="text-white text-lg md:text-xl">
                                         Chat live now, free forever, Essential preview unlocked for a limited time.
                                     </p>
                                 </div>
@@ -64,7 +64,7 @@ export default function AIHROverlayTrigger() {
                                             <h3 className="text-xl md:text-2xl font-bold text-white">AIHR Free</h3>
                                             <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" />
                                         </div>
-                                        <p className="text-white/60 text-xs md:text-sm mb-4">Live Assistant</p>
+                                        <p className="text-white text-sm md:text-base mb-4">Live Assistant</p>
                                         <div className="flex-1 rounded-2xl overflow-hidden bg-white/5 border border-white/10">
                                             <iframe
                                                 allow="microphone"
@@ -115,9 +115,9 @@ export default function AIHROverlayTrigger() {
                                             🔒
                                         </div>
                                         <h3 className="text-lg md:text-2xl font-bold text-white mb-2">AIHR Professional</h3>
-                                        <p className="text-white/50 text-xs md:text-sm mb-6">Coming Soon</p>
-                                        <p className="text-white/60 text-xs md:text-sm line-through mb-6">S$11,988 /yr</p>
-                                        <p className="text-white/60 text-xs md:text-sm leading-relaxed mb-8">
+                                        <p className="text-white text-sm md:text-base mb-6">Coming Soon</p>
+                                        <p className="text-white text-sm md:text-base mb-6">S$11,988 /yr</p>
+                                        <p className="text-white text-sm md:text-base leading-relaxed mb-8">
                                             AIHR Pro+ chatbot, two HR audits per year, premium policy packs, 25% off HCCS consultancy fees,
                                             built for companies with 20-99 staff.
                                         </p>
@@ -134,9 +134,9 @@ export default function AIHROverlayTrigger() {
                                             👑
                                         </div>
                                         <h3 className="text-lg md:text-2xl font-bold text-white mb-2">AIHR Strategic</h3>
-                                        <p className="text-white/50 text-xs md:text-sm mb-6">Coming Soon</p>
-                                        <p className="text-white/60 text-xs md:text-sm line-through mb-6">S$17,988 /yr</p>
-                                        <p className="text-white/60 text-xs md:text-sm leading-relaxed mb-8">
+                                        <p className="text-white text-sm md:text-base mb-6">Coming Soon</p>
+                                        <p className="text-white text-sm md:text-base mb-6">S$17,988 /yr</p>
+                                        <p className="text-white text-sm md:text-base leading-relaxed mb-8">
                                             Widest AI knowledge base, team and organisation portal, dedicated onboarding, 30% off HCCS
                                             consultancy fees, built for companies with 100+ staff.
                                         </p>

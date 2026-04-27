@@ -570,6 +570,23 @@
         "desc": "获取AI驱动的人力资源工具、优质模板、合规扫描及独家咨询折扣——专为新加坡企业设计。",
         "mostPopular": "最受欢迎",
         "faqTitle": "常见问题",
+        "promo": {
+            "monthlyBadge": "限时优惠",
+            "monthlyLabel": "基础版套餐",
+            "monthlyTitle": "前3个月仅需S$199/月",
+            "monthlyDesc": "按月计费——第1至3个月每月S$199，第4个月起恢复原价每月S$499。",
+            "monthlyThen": "之后每月S$499",
+            "monthlySavings": "前3个月节省S$900",
+            "monthlyCta": "立即领取优惠",
+            "annualBadge": "超值之选",
+            "annualLabel": "基础版套餐",
+            "annualTitle": "额外赠送3个月",
+            "annualDesc": "选择年付套餐，以12个月的价格享受15个月的基础版服务——额外赠送3个月，完全免费。",
+            "annualPlanLabel": "12个月套餐",
+            "annualHighlight": "赠送3个月",
+            "annualSubtitle": "花12个月的钱，享15个月服务",
+            "annualCta": "立即领取优惠"
+        },
         "plans": [
             {
                 "name": "免费版",

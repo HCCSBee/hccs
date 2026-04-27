@@ -3,21 +3,31 @@
 import Link from "next/link";
 import { useLang } from "@/lib/i18n";
 
-type Feature = { id: number; text: string };
+type Feature = { id: number; text: string | null; text_cn: string | null };
 
 type Props = {
   service: {
-    title: string;
+    title: string | null;
+    title_cn: string | null;
     short_description: string | null;
+    short_description_cn: string | null;
     long_description: string | null;
+    long_description_cn: string | null;
   };
   featureList: Feature[];
   helpList: Feature[];
 };
 
 export default function ServiceDetailClient({ service, featureList, helpList }: Props) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const sd = t.serviceDetail;
+  const title = lang === "zh" ? (service.title_cn ?? service.title ?? "") : (service.title ?? service.title_cn ?? "");
+  const shortDescription = lang === "zh"
+    ? (service.short_description_cn ?? service.short_description)
+    : (service.short_description ?? service.short_description_cn);
+  const longDescription = lang === "zh"
+    ? (service.long_description_cn ?? service.long_description)
+    : (service.long_description ?? service.long_description_cn);
 
   return (
     <div className="bg-white min-h-screen">
@@ -28,19 +38,19 @@ export default function ServiceDetailClient({ service, featureList, helpList }: 
             <span aria-hidden>{"<-"}</span> {sd.allServices}
           </Link>
           <p className="text-xs font-semibold uppercase tracking-widest text-amber-300 mb-3">{sd.badge}</p>
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4">{service.title}</h1>
-          {service.short_description && (
-            <p className="text-white/70 text-lg max-w-2xl leading-relaxed">{service.short_description}</p>
+          <h1 className="text-4xl sm:text-5xl font-bold mb-4">{title}</h1>
+          {shortDescription && (
+            <p className="text-white/70 text-lg max-w-2xl leading-relaxed">{shortDescription}</p>
           )}
         </div>
       </section>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-14">
         {/* Long description */}
-        {service.long_description && (
+        {longDescription && (
           <section>
             <h2 className="text-2xl font-bold text-slate-900 mb-4">{sd.overview}</h2>
-            <p className="text-slate-600 leading-relaxed text-base whitespace-pre-line">{service.long_description}</p>
+            <p className="text-slate-600 leading-relaxed text-base whitespace-pre-line">{longDescription}</p>
           </section>
         )}
 
@@ -49,12 +59,15 @@ export default function ServiceDetailClient({ service, featureList, helpList }: 
           <section>
             <h2 className="text-2xl font-bold text-slate-900 mb-6">{sd.whatsIncluded}</h2>
             <ul className="grid sm:grid-cols-2 gap-4">
-              {featureList.map((f) => (
+              {featureList.map((f) => {
+                const featureText = lang === "zh" ? (f.text_cn ?? f.text ?? "") : (f.text ?? f.text_cn ?? "");
+                return (
                 <li key={f.id} className="flex items-start gap-3 bg-emerald-50 border border-emerald-100 rounded-xl p-4">
                   <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">✓</span>
-                  <span className="text-slate-700 text-sm leading-relaxed">{f.text}</span>
+                  <span className="text-slate-700 text-sm leading-relaxed">{featureText}</span>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </section>
         )}
@@ -64,12 +77,15 @@ export default function ServiceDetailClient({ service, featureList, helpList }: 
           <section>
             <h2 className="text-2xl font-bold text-slate-900 mb-6">{sd.whoHelps}</h2>
             <ul className="space-y-3">
-              {helpList.map((h) => (
+              {helpList.map((h) => {
+                const helpText = lang === "zh" ? (h.text_cn ?? h.text ?? "") : (h.text ?? h.text_cn ?? "");
+                return (
                 <li key={h.id} className="flex items-start gap-3">
                   <span className="mt-1 flex-shrink-0 w-2 h-2 rounded-full bg-amber-500" />
-                  <span className="text-slate-600 text-sm leading-relaxed">{h.text}</span>
+                  <span className="text-slate-600 text-sm leading-relaxed">{helpText}</span>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           </section>
         )}

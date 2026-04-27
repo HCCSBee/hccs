@@ -8,8 +8,10 @@ import { useLang } from "@/lib/i18n";
 
 type Service = {
     id: number;
-    title: string;
+    title: string | null;
+    title_cn: string | null;
     short_description: string | null;
+    short_description_cn: string | null;
     slug: string;
 };
 
@@ -20,7 +22,7 @@ function initials(title: string): string {
 }
 
 export default function ServicesPage() {
-    const { t } = useLang();
+    const { t, lang } = useLang();
     const s = t.services;
     const [serviceList, setServiceList] = useState<Service[]>([]);
     const [loading, setLoading] = useState(true);
@@ -28,7 +30,7 @@ export default function ServicesPage() {
     useEffect(() => {
         supabase
             .from("services")
-            .select("id, title, short_description, slug")
+            .select("id, title, title_cn, short_description, short_description_cn, slug")
             .order("id")
             .then(({ data }) => {
                 setServiceList((data ?? []).filter((s): s is Service => Boolean(s.slug)));
@@ -72,7 +74,12 @@ export default function ServicesPage() {
                         <p className="text-center text-slate-500 py-12">{s.loading}</p>
                     ) : (
                         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {serviceList.map((service, index) => (
+                            {serviceList.map((service, index) => {
+                                const title = lang === "zh" ? (service.title_cn ?? service.title ?? "") : (service.title ?? service.title_cn ?? "");
+                                const shortDescription = lang === "zh"
+                                    ? (service.short_description_cn ?? service.short_description ?? "")
+                                    : (service.short_description ?? service.short_description_cn ?? "");
+                                return (
                                 <Link
                                     key={service.id}
                                     href={`/services/${service.slug}`}
@@ -82,17 +89,18 @@ export default function ServicesPage() {
                                         {index + 1}
                                     </div>
                                     <h3 className="text-lg font-semibold text-slate-900 mb-2 group-hover:text-amber-700 transition-colors">
-                                        {service.title}
+                                        {title}
                                     </h3>
                                     <p className="text-sm text-slate-600 leading-relaxed mb-4">
-                                        {service.short_description}
+                                        {shortDescription}
                                     </p>
                                     <p className="inline-flex items-center gap-1 text-amber-700 text-sm font-medium">
                                         {t.common.learnMore}
                                         <span aria-hidden>{"->"}</span>
                                     </p>
                                 </Link>
-                            ))}
+                                );
+                            })}
                         </div>
                     )}
                 </div>

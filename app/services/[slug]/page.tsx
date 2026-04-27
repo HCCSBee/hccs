@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
 
   const { data: service, error } = await supabase
     .from("services")
-    .select("title, short_description")
+    .select("title, title_cn, short_description, short_description_cn")
     .eq("slug", slug)
     .single();
 
@@ -22,8 +22,8 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
   }
 
   return {
-    title: `${service.title} | HCCS Services`,
-    description: service.short_description ?? undefined,
+    title: `${service.title ?? service.title_cn ?? "Service"} | HCCS Services`,
+    description: service.short_description ?? service.short_description_cn ?? undefined,
   };
 }
 
@@ -33,7 +33,7 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
 
   const { data: service, error: serviceError } = await supabase
     .from("services")
-    .select("id, title, short_description, long_description")
+    .select("id, title, title_cn, short_description, short_description_cn, long_description, long_description_cn")
     .eq("slug", slug)
     .single();
 
@@ -42,8 +42,8 @@ export default async function ServiceDetailPage({ params }: ServicePageProps) {
   }
 
   const [{ data: resolvedFeatures }, { data: resolvedHelp }] = await Promise.all([
-    supabase.from("services_features").select("id, text").eq("services_id", service.id).order("id"),
-    supabase.from("services_help").select("id, text").eq("services_id", service.id).order("id"),
+    supabase.from("services_features").select("id, text, text_cn").eq("services_id", service.id).order("id"),
+    supabase.from("services_help").select("id, text, text_cn").eq("services_id", service.id).order("id"),
   ]);
 
   const featureList = resolvedFeatures ?? [];
