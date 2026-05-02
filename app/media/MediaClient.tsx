@@ -66,7 +66,7 @@ export default function MediaClient() {
               style={{ aspectRatio: "9 / 16" }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={video.image} alt="TikTok video" className="w-full h-full object-contain bg-slate-900" />
+              <img src={process.env.NEXT_PUBLIC_STORAGE_URL + video.image} alt="TikTok video" className="w-full h-full object-contain bg-slate-900" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/90 transition-all" />
             </a>
           ))}
