@@ -11,3 +11,4 @@ const insights = (mediaItems ?? []).filter((m) => m.image && m.link);
 
 return <HomePageClient mediaItems={insights} storageUrl={storageUrl} />;
 }
+ 
