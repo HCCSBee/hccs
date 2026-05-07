@@ -353,66 +353,6 @@
       text-decoration: none;
     }
 
-    /* Floating QR widget */
-    .qr-float {
-      position: fixed;
-      bottom: 32px;
-      right: 32px;
-      z-index: 100;
-      background: #fff;
-      border: 3px solid var(--emerald);
-      border-radius: 20px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.22);
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      width: 280px;
-      text-decoration: none;
-      transition: box-shadow 180ms ease, transform 180ms ease;
-    }
-
-    .qr-float:hover {
-      box-shadow: 0 24px 64px rgba(0,0,0,0.28);
-      transform: translateY(-3px);
-    }
-
-    .qr-float img {
-      width: 220px;
-      height: 220px;
-      display: block;
-    }
-
-    .qr-float span {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--emerald);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      text-align: center;
-      line-height: 1.3;
-    }
-
-    @media (max-width: 600px) {
-      .qr-float {
-        bottom: 14px;
-        right: 14px;
-        width: 160px;
-        padding: 12px;
-        gap: 8px;
-      }
-
-      .qr-float img {
-        width: 120px;
-        height: 120px;
-      }
-
-      .qr-float span {
-        font-size: 13px;
-      }
-    }
-
     /* Mobile */
     @media (max-width: 600px) {
       .top, .content { padding-inline: 18px; }
@@ -460,12 +400,6 @@
       </section>
     </main>
   </div>
-
-  <!-- Floating QR code -->
-  <a class="qr-float" href="/mini-quiz-landing.html" title="Scan to try the quiz">
-    <img src="miniquiz.svg" alt="QR code — try the quiz" />
-    <span>Try it here</span>
-  </a>
 
   <!-- Footer -->
   <footer class="site-footer">

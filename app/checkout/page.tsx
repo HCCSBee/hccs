@@ -9,7 +9,7 @@ import { supabase } from "@/lib/supabase/client";
 type BillingCycle = "monthly" | "annual";
 
 const PLAN_ROWS_BY_ID: Record<number, { plan: string; label: string; price: number; cycle: BillingCycle; kind?: "subscription" | "one-time" }> = {
-  1: { plan: "essential", label: "Essential", price: 499, cycle: "monthly" },
+  1: { plan: "essential", label: "Essential", price: 599, cycle: "monthly" },
   2: { plan: "essential", label: "Essential", price: 5988, cycle: "annual" },
   3: { plan: "professional", label: "Professional", price: 999, cycle: "monthly" },
   4: { plan: "professional", label: "Professional", price: 11988, cycle: "annual" },

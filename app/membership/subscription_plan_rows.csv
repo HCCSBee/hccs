@@ -1,5 +1,5 @@
 id,created_at,name,user_tier_id,billing_cycle,price,currency,is_active,description
-1,2026-04-24 22:17:32.856072+00,Essential Monthly,2,monthly,499.00,SGD,1,Essential tier billed monthly
+1,2026-04-24 22:17:32.856072+00,Essential Monthly,2,monthly,599.00,SGD,1,Essential tier billed monthly
 2,2026-04-24 22:17:32.856072+00,Essential Annual,2,annual,5988.00,SGD,1,Essential tier billed annually (save ~17%)
 3,2026-04-24 22:17:32.856072+00,Professional Monthly,3,monthly,999.00,SGD,1,Professional tier billed monthly
 4,2026-04-24 22:17:32.856072+00,Professional Annual,3,annual,11988.00,SGD,1,Professional tier billed annually

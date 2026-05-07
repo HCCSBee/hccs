@@ -9,7 +9,7 @@ type PlanKey = "essential" | "professional" | "strategic";
 
 const SUBSCRIPTION_PLAN_ROWS: Record<PlanKey, Partial<Record<BillingCycle, { id: number; price: number }>>> = {
   essential: {
-    monthly: { id: 1, price: 499 },
+    monthly: { id: 1, price: 599 },
     annual: { id: 2, price: 5988 },
   },
   professional: {
