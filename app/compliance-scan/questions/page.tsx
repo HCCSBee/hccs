@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLang } from "@/lib/i18n";
 
@@ -89,8 +89,10 @@ const StepIndicator = ({ activeStep }: { activeStep: number }) => {
 
 export default function ComplianceScanQuestionsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useLang();
   const qp = t.complianceScan.questionsPage;
+  const qrFromUrl = searchParams.get("id")?.trim() ?? "";
 
   // Build questions from locale text + static scores
   const questions: Question[] = qp.questions.map((locQ, idx) => ({
@@ -129,6 +131,14 @@ export default function ComplianceScanQuestionsPage() {
     }
   }, [company, router]);
 
+  useEffect(() => {
+    if (!qrFromUrl || typeof window === "undefined") {
+      return;
+    }
+
+    sessionStorage.setItem("cs_qr", qrFromUrl);
+  }, [qrFromUrl]);
+
   const answered = Object.keys(answers).length;
   const allAnswered = answered === questions.length;
   const progress = (answered / questions.length) * 100;
@@ -143,7 +153,9 @@ export default function ComplianceScanQuestionsPage() {
     const primaryRisk = getPrimaryRisk(answers, qp.mixedRisk, qp.generalCompliance);
     const alerts = getAlerts(answers, qp.momAlert, qp.cpfAlert, qp.tafepAlert);
     const recommendations = qp.riskLevels[riskLevel]?.recommendations ?? [];
+    const qr = sessionStorage.getItem("cs_qr") || qrFromUrl || null;
     const resultsPayload = {
+      qr,
       totalScore,
       riskLevel,
       hasCriticalOverride,
@@ -166,6 +178,7 @@ export default function ComplianceScanQuestionsPage() {
     const companyData = raw ? JSON.parse(raw) : {};
 
     const formPayload = {
+      qr,
       company_name: companyData.company ?? null,
       contact_name: companyData.name ?? null,
       business_email: companyData.email ?? null,

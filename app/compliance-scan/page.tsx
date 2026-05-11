@@ -1,11 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLang } from "@/lib/i18n";
 
 export default function ComplianceScanCoverPage() {
   const { t } = useLang();
   const cs = t.complianceScan;
+  const searchParams = useSearchParams();
+  const qrId = searchParams.get("id")?.trim() ?? "";
+  const nextHref = qrId
+    ? `/compliance-scan/company-details?id=${encodeURIComponent(qrId)}`
+    : "/compliance-scan/company-details";
+
+  useEffect(() => {
+    if (!qrId || typeof window === "undefined") {
+      return;
+    }
+
+    sessionStorage.setItem("cs_qr", qrId);
+  }, [qrId]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -22,7 +37,7 @@ export default function ComplianceScanCoverPage() {
             {cs.desc}
           </p>
           <Link
-            href="/compliance-scan/company-details"
+            href={nextHref}
             className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white font-semibold px-8 py-4 rounded-xl text-base transition-colors shadow-lg"
           >
             {cs.startScan}
@@ -68,7 +83,7 @@ export default function ComplianceScanCoverPage() {
         <h2 className="text-2xl font-bold mb-4">{cs.ctaTitle}</h2>
         <p className="text-white/60 mb-6 text-sm">{cs.ctaDesc}</p>
         <Link
-          href="/compliance-scan/company-details"
+          href={nextHref}
           className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-white font-semibold px-8 py-3 rounded-xl transition-colors"
         >
           {cs.ctaButton}
