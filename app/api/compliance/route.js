@@ -6,6 +6,15 @@ import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 const RISK_COLORS = { LOW: "#16a34a", MEDIUM: "#d97706", HIGH: "#dc2626" };
 const RISK_LABELS = { LOW: "Low Risk", MEDIUM: "Medium Risk", HIGH: "High Risk" };
 
+function normalizeQr(value) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const cleaned = value.trim().replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64);
+  return cleaned || null;
+}
+
 function hexToRgb(hex) {
   const n = parseInt(hex.replace("#", ""), 16);
   return rgb(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
@@ -308,26 +317,39 @@ export async function POST(req) {
   }
 
   const supabase = createClient(supabaseUrl, serviceRoleKey);
+  const qr = normalizeQr(body.qr);
 
-  const { data: scanRow, error: scanError } = await supabase
+  const baseInsertRow = {
+    company_name: body.company_name ?? null,
+    contact_name: body.contact_name ?? null,
+    business_email: body.business_email ?? null,
+    contact_number: body.contact_number ?? null,
+    industry: body.industry ?? null,
+    employess: body.employess ?? null,
+    has_foreign_workers: body.has_foreign_workers ?? 0,
+    results: JSON.stringify(results),
+    total_score: Number.isFinite(results.totalScore) ? results.totalScore : null,
+    primary_risk: results.primaryRisk ?? null,
+    risk_level: results.riskLevel ?? null,
+    alert: JSON.stringify(alerts),
+    recommendation: JSON.stringify(recommendations),
+  };
+
+  const insertRow = qr ? { ...baseInsertRow, qr } : baseInsertRow;
+
+  let { data: scanRow, error: scanError } = await supabase
     .from("compliance_scan")
-    .insert({
-      company_name: body.company_name ?? null,
-      contact_name: body.contact_name ?? null,
-      business_email: body.business_email ?? null,
-      contact_number: body.contact_number ?? null,
-      industry: body.industry ?? null,
-      employess: body.employess ?? null,
-      has_foreign_workers: body.has_foreign_workers ?? 0,
-      results: JSON.stringify(results),
-      total_score: Number.isFinite(results.totalScore) ? results.totalScore : null,
-      primary_risk: results.primaryRisk ?? null,
-      risk_level: results.riskLevel ?? null,
-      alert: JSON.stringify(alerts),
-      recommendation: JSON.stringify(recommendations),
-    })
+    .insert(insertRow)
     .select("id")
     .single();
+
+  if (scanError && qr && scanError.code === "PGRST204") {
+    ({ data: scanRow, error: scanError } = await supabase
+      .from("compliance_scan")
+      .insert(baseInsertRow)
+      .select("id")
+      .single());
+  }
 
   if (scanError) {
     console.error("Supabase scan insert error:", scanError.message);
