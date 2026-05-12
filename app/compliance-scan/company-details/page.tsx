@@ -1,8 +1,8 @@
 "use client";
 
 export const dynamic = "force-dynamic";
-import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLang } from "@/lib/i18n";
 
 const industries = [
@@ -26,11 +26,10 @@ const companySizes = [
 
 export default function CompanyDetailsPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { t } = useLang();
   const cd = t.complianceScan.companyDetails;
   const steps = t.complianceScan.steps;
-  const qrId = searchParams.get("id")?.trim() ?? "";
+  const [qrId, setQrId] = useState("");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -46,6 +45,15 @@ export default function CompanyDetailsPage() {
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const id = new URLSearchParams(window.location.search).get("id")?.trim() ?? "";
+    setQrId(id);
+  }, []);
 
   const allFilled = form.name && form.email && form.company && form.industry && form.size && form.foreignWorkers !== null;
 

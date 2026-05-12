@@ -3,18 +3,17 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLang } from "@/lib/i18n";
 
 export default function ComplianceScanIntroPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { t } = useLang();
   const i18n = t.complianceScan.intro;
   const steps = t.complianceScan.steps;
   const [company, setCompany] = useState<{ name: string; company: string } | null>(null);
-  const qrId = searchParams.get("id")?.trim() ?? "";
+  const [qrId, setQrId] = useState("");
   const companyDetailsHref = qrId
     ? `/compliance-scan/company-details?id=${encodeURIComponent(qrId)}`
     : "/compliance-scan/company-details";
@@ -30,6 +29,21 @@ export default function ComplianceScanIntroPage() {
     }
     setCompany(JSON.parse(raw));
   }, [router]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const id = new URLSearchParams(window.location.search).get("id")?.trim() ?? "";
+    setQrId(id);
+
+    if (!id) {
+      return;
+    }
+
+    sessionStorage.setItem("cs_qr", id);
+  }, []);
 
   useEffect(() => {
     if (!qrId || typeof window === "undefined") {

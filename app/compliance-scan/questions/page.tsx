@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 import { useEffect, useMemo, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useLang } from "@/lib/i18n";
 
@@ -89,10 +89,9 @@ const StepIndicator = ({ activeStep }: { activeStep: number }) => {
 
 export default function ComplianceScanQuestionsPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { t } = useLang();
   const qp = t.complianceScan.questionsPage;
-  const qrFromUrl = searchParams.get("id")?.trim() ?? "";
+  const [qrFromUrl, setQrFromUrl] = useState("");
 
   // Build questions from locale text + static scores
   const questions: Question[] = qp.questions.map((locQ, idx) => ({
@@ -130,6 +129,21 @@ export default function ComplianceScanQuestionsPage() {
       router.replace("/compliance-scan/company-details");
     }
   }, [company, router]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const id = new URLSearchParams(window.location.search).get("id")?.trim() ?? "";
+    setQrFromUrl(id);
+
+    if (!id) {
+      return;
+    }
+
+    sessionStorage.setItem("cs_qr", id);
+  }, []);
 
   useEffect(() => {
     if (!qrFromUrl || typeof window === "undefined") {
