@@ -1,26 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useLang } from "@/lib/i18n";
 
 export default function ComplianceScanCoverPage() {
   const { t } = useLang();
   const cs = t.complianceScan;
-  const searchParams = useSearchParams();
-  const qrId = searchParams.get("id")?.trim() ?? "";
+  const [qrId, setQrId] = useState("");
   const nextHref = qrId
     ? `/compliance-scan/company-details?id=${encodeURIComponent(qrId)}`
     : "/compliance-scan/company-details";
 
   useEffect(() => {
-    if (!qrId || typeof window === "undefined") {
+    if (typeof window === "undefined") {
       return;
     }
 
-    sessionStorage.setItem("cs_qr", qrId);
-  }, [qrId]);
+    const id = new URLSearchParams(window.location.search).get("id")?.trim() ?? "";
+    setQrId(id);
+
+    if (!id) {
+      return;
+    }
+
+    sessionStorage.setItem("cs_qr", id);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
