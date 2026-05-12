@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
     const qrCode = typeof body.qr_code === "string" ? body.qr_code.trim() : "";
     const participantId = typeof body.participant_id === "string" ? body.participant_id.trim() : "";
-    const score = body.score;
+    const rawScore = body.score;
 
     if (!QR_CODE_PATTERN.test(qrCode)) {
       return NextResponse.json({ error: "Invalid qr_code." }, { status: 400 });
@@ -27,9 +27,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid participant_id." }, { status: 400 });
     }
 
-    if (!Number.isInteger(score) || score < 0 || score > 9) {
+    if (
+      typeof rawScore !== "number" ||
+      !Number.isInteger(rawScore) ||
+      rawScore < 0 ||
+      rawScore > 9
+    ) {
       return NextResponse.json({ error: "Invalid score." }, { status: 400 });
     }
+
+    const score = rawScore;
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey =

@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLang } from "@/lib/i18n";
 
 const industries = [
@@ -26,9 +26,11 @@ const companySizes = [
 
 export default function CompanyDetailsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useLang();
   const cd = t.complianceScan.companyDetails;
   const steps = t.complianceScan.steps;
+  const qrId = searchParams.get("id")?.trim() ?? "";
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -50,6 +52,12 @@ export default function CompanyDetailsPage() {
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
     sessionStorage.setItem("cs_company", JSON.stringify(form));
+    if (qrId) {
+      sessionStorage.setItem("cs_qr", qrId);
+      router.push(`/compliance-scan/intro?id=${encodeURIComponent(qrId)}`);
+      return;
+    }
+
     router.push("/compliance-scan/intro");
   };
 

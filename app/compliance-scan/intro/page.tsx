@@ -3,16 +3,24 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useLang } from "@/lib/i18n";
 
 export default function ComplianceScanIntroPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useLang();
   const i18n = t.complianceScan.intro;
   const steps = t.complianceScan.steps;
   const [company, setCompany] = useState<{ name: string; company: string } | null>(null);
+  const qrId = searchParams.get("id")?.trim() ?? "";
+  const companyDetailsHref = qrId
+    ? `/compliance-scan/company-details?id=${encodeURIComponent(qrId)}`
+    : "/compliance-scan/company-details";
+  const questionsHref = qrId
+    ? `/compliance-scan/questions?id=${encodeURIComponent(qrId)}`
+    : "/compliance-scan/questions";
 
   useEffect(() => {
     const raw = sessionStorage.getItem("cs_company");
@@ -22,6 +30,14 @@ export default function ComplianceScanIntroPage() {
     }
     setCompany(JSON.parse(raw));
   }, [router]);
+
+  useEffect(() => {
+    if (!qrId || typeof window === "undefined") {
+      return;
+    }
+
+    sessionStorage.setItem("cs_qr", qrId);
+  }, [qrId]);
 
   if (!company) return null;
 
@@ -79,13 +95,13 @@ export default function ComplianceScanIntroPage() {
 
           <div className="flex gap-3">
             <Link
-              href="/compliance-scan/company-details"
+              href={companyDetailsHref}
               className="flex-1 text-center border border-slate-300 text-slate-600 hover:bg-slate-50 font-medium py-3 rounded-lg text-sm transition-colors"
             >
               {i18n.back}
             </Link>
             <Link
-              href="/compliance-scan/questions"
+              href={questionsHref}
               className="flex-1 text-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-lg text-sm transition-colors"
             >
               {i18n.start}
